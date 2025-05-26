@@ -26,10 +26,14 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
         author_icon_url = self.bot.user.avatar.url if self.bot.user and self.bot.user.avatar else None
         embed.set_author(name=author_name, icon_url=author_icon_url)
 
-        guild = context.guild if isinstance(context, Context) else (context.guild if isinstance(context, Interaction) else None)
+        guild_obj = None
+        if isinstance(context, Context):
+            guild_obj = context.guild
+        elif isinstance(context, Interaction):
+            guild_obj = context.guild
 
-        if guild and guild.icon:
-            embed.set_footer(text=f"Serwer: {guild.name} | Kroniki Elary", icon_url=guild.icon.url)
+        if guild_obj and guild_obj.icon:
+            embed.set_footer(text=f"Serwer: {guild_obj.name} | Kroniki Elary", icon_url=guild_obj.icon.url)
         else:
             embed.set_footer(text="Kroniki Elary")
         return embed
@@ -95,8 +99,7 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
                                    [f"• **+{wartosc_b*100:.0f}%** XP (Stały)\n"
                                     for typ_b, wartosc_b, _ in aktywne_bonusy_zakupione if typ_b == "xp_mnoznik" and _ is None])
             if opis_bonusow: embed.add_field(name="🌌 Aktywne Artefakty Wzmocnienia", value=opis_bonusow.strip(), inline=False)
-        
-        # Wyświetlanie odznak w profilu (prosta implementacja - można rozbudować)
+
         zdobyte_tiery_db = await self.bot.baza_danych.pobierz_zdobyte_osiagniecia_uzytkownika(str(target_user.id), str(context.guild.id))
         zdobyte_tiery_ids = {tier_id for tier_id, _ in zdobyte_tiery_db}
         odznaki_do_wyswietlenia = []
@@ -104,10 +107,9 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
             for tier_dane in os_bazowe_dane.get("tiery", []):
                 if tier_dane["id"] in zdobyte_tiery_ids and tier_dane.get("odznaka_emoji"):
                     odznaki_do_wyswietlenia.append(tier_dane["odznaka_emoji"])
-        
+
         if odznaki_do_wyswietlenia:
-            # Ograniczenie liczby wyświetlanych odznak dla czytelności
-            max_odznak_w_profilu = 5 
+            max_odznak_w_profilu = 5
             embed.add_field(name="🎖️ Zdobyte Odznaki", value=" ".join(odznaki_do_wyswietlenia[:max_odznak_w_profilu]) + (f" ... (i {len(odznaki_do_wyswietlenia) - max_odznak_w_profilu} więcej)" if len(odznaki_do_wyswietlenia) > max_odznak_w_profilu else ""), inline=False)
 
 
@@ -122,10 +124,79 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
         if context.guild.icon: embed.set_thumbnail(url=context.guild.icon.url)
         if not ranking: embed.description = "Księga Mocy jest pusta."
         else:
-            opis_list = [f"{'🥇🥈🥉'[i] if i < 3 else f'**{i+1}.**'} {(context.guild.get_member(uid) or f'Nieznany ({uid})').display_name} - Poziom: **{poz}**, XP: **{xp}**" for i, (uid, xp, poz) in enumerate(ranking)]
+            opis_list = []
+            medale = ["🥇", "🥈", "🥉"]
+            for i, (uid_str, xp, poz) in enumerate(ranking):
+                uid = int(uid_str)
+                uzytkownik_obj = context.guild.get_member(uid)
+                nazwa_uzytkownika = uzytkownik_obj.display_name if uzytkownik_obj else f"Nieznany ({uid})"
+                medal_str = medale[i] if i < len(medale) else f"**{i+1}.**"
+                opis_list.append(f"{medal_str} {nazwa_uzytkownika} - Poziom: **{poz}**, XP: **{xp}**")
             embed.description = "\n".join(opis_list)
         embed.set_footer(text="Niech Twoja legenda rośnie!", icon_url=context.guild.icon.url if context.guild.icon else None)
         await context.send(embed=embed)
+
+    @commands.hybrid_command(name="rankingmiesiecznyxp", aliases=["miesiecznyrankingxp", "topxpsezon"], description="Wyświetla miesięczny ranking XP.")
+    @app_commands.describe(
+        rok="Rok, dla którego wyświetlić ranking (opcjonalnie, domyślnie poprzedni miesiąc).",
+        miesiac="Miesiąc (1-12), dla którego wyświetlić ranking (opcjonalnie, domyślnie poprzedni miesiąc)."
+    )
+    async def rankingmiesiecznyxp(self, context: Context, rok: typing.Optional[int] = None, miesiac: typing.Optional[int] = None):
+        if not context.guild or self.bot.baza_danych is None:
+            await context.send("Ta komenda może być użyta tylko na serwerze, a baza danych musi być dostępna.", ephemeral=True)
+            return
+
+        teraz = datetime.now(UTC)
+        
+        if rok is None or miesiac is None:
+            # Domyślnie pokazujemy ranking za poprzedni zakończony miesiąc
+            docelowa_data_do_rankingu = (teraz.replace(day=1) - timedelta(days=1))
+        else:
+            if not (1 <= miesiac <= 12):
+                await context.send("Nieprawidłowy numer miesiąca. Podaj liczbę od 1 do 12.", ephemeral=True)
+                return
+            try:
+                # Ustawiamy datę na pierwszy dzień podanego miesiąca, aby łatwo uzyskać rok i miesiąc
+                docelowa_data_do_rankingu = datetime(rok, miesiac, 1, tzinfo=UTC)
+            except ValueError:
+                await context.send("Nieprawidłowa data. Sprawdź rok i miesiąc.", ephemeral=True)
+                return
+        
+        rok_rankingu = docelowa_data_do_rankingu.year
+        miesiac_rankingu = docelowa_data_do_rankingu.month
+        
+        nazwy_miesiecy = [
+            "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+            "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
+        ]
+        nazwa_miesiaca_pl = nazwy_miesiecy[miesiac_rankingu - 1]
+
+        ranking_data = await self.bot.baza_danych.pobierz_ranking_miesiecznego_xp(str(context.guild.id), rok_rankingu, miesiac_rankingu, limit=10)
+
+        embed = await self._create_exp_embed(
+            context,
+            title=f"🏆 Ranking Miesięczny XP - {nazwa_miesiaca_pl} {rok_rankingu}",
+            color=config.KOLOR_RANKINGU_SEZONOWEGO
+        )
+        if context.guild.icon:
+            embed.set_thumbnail(url=context.guild.icon.url)
+
+        if not ranking_data:
+            embed.description = f"Brak danych rankingowych dla {nazwa_miesiaca_pl} {rok_rankingu} na serwerze **{context.guild.name}**.\nMoże sezon się jeszcze nie rozpoczął lub nikt nie zdobył jeszcze XP w tym miesiącu?"
+        else:
+            opisy_rankingu = []
+            medale = ["🥇", "🥈", "🥉"]
+            for i, (user_id_db_str, xp_miesieczne) in enumerate(ranking_data):
+                user_id_db = int(user_id_db_str)
+                uzytkownik_obj = context.guild.get_member(user_id_db)
+                nazwa_uzytkownika = uzytkownik_obj.display_name if uzytkownik_obj else f"Nieznany Kronikarz ({user_id_db})"
+                medal_str = medale[i] if i < len(medale) else f"**{i+1}.**"
+                opisy_rankingu.append(f"{medal_str} {nazwa_uzytkownika} - **{xp_miesieczne} XP**")
+            embed.description = "\n".join(opisy_rankingu)
+        
+        embed.set_footer(text=f"Ranking dla {nazwa_miesiaca_pl} {rok_rankingu} | Kroniki Elary", icon_url=context.guild.icon.url if context.guild.icon else None)
+        await context.send(embed=embed)
+
 
     @commands.hybrid_command(name="dodajrolenagrode", description="Dodaje rolę jako nagrodę za osiągnięcie poziomu.")
     @has_permissions(administrator=True)
@@ -333,7 +404,7 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
         if target_user.display_avatar: embed.set_thumbnail(url=target_user.display_avatar.url)
 
         opis_osiagniec_list = []
-        liczba_zdobytych_tierow_jawnych = 0 # Licznik tylko dla jawnych tierów
+        liczba_zdobytych_tierow_jawnych = 0
 
         for os_bazowe_id, os_bazowe_dane in self.bot.DEFINICJE_OSIAGNIEC.items():
             czy_bazowe_ukryte = os_bazowe_dane.get("ukryte", False)
@@ -342,24 +413,21 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
             for tier_dane in os_bazowe_dane.get("tiery", []):
                 if tier_dane["id"] in zdobyte_tiery_ids:
                     zdobyte_tiery_tego_osiagniecia.append(tier_dane)
-                    if not czy_bazowe_ukryte: # Liczymy tylko jeśli tier należy do jawnego osiągnięcia bazowego
+                    if not czy_bazowe_ukryte:
                         liczba_zdobytych_tierow_jawnych +=1
 
 
             if zdobyte_tiery_tego_osiagniecia:
-                # Jeśli osiągnięcie bazowe jest ukryte, ale użytkownik je zdobył, to je pokazujemy.
-                # Jeśli jest jawne, zawsze pokazujemy, jeśli są zdobyte tiery.
                 najwyzszy_zdobyty_tier = max(zdobyte_tiery_tego_osiagniecia, key=lambda t: t["wartosc_warunku"])
                 
                 nazwa_wyswietlana = najwyzszy_zdobyty_tier.get("nazwa_tieru", os_bazowe_dane.get("nazwa_bazowa", "Nieznane Osiągnięcie"))
                 opis_wyswietlany = najwyzszy_zdobyty_tier.get("opis_tieru", os_bazowe_dane.get("opis_bazowy", "Zdobyto!"))
                 ikona_bazowa = os_bazowe_dane.get("ikona", "🏆")
-                odznaka_tieru = najwyzszy_zdobyty_tier.get("odznaka_emoji", "") # Pobieramy odznakę
+                odznaka_tieru = najwyzszy_zdobyty_tier.get("odznaka_emoji", "")
 
                 data_zdobycia_ts = next((ts for tid, ts in zdobyte_tiery_db if tid == najwyzszy_zdobyty_tier["id"]), None)
                 data_str = f"<t:{data_zdobycia_ts}:D>" if data_zdobycia_ts else "Nieznana data"
 
-                # Dodajemy odznakę przed nazwą, jeśli istnieje
                 opis_osiagniec_list.append(f"{ikona_bazowa} {odznaka_tieru} **{nazwa_wyswietlana}**\n_{opis_wyswietlany}_\n*Zdobyto: {data_str}*")
 
         if not opis_osiagniec_list:
@@ -390,9 +458,9 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
 
             for os_bazowe_id, os_bazowe_dane in self.bot.DEFINICJE_OSIAGNIEC.items():
                 if os_bazowe_dane.get("ukryte", False):
-                    continue 
+                    continue
 
-                kategoria = os_bazowe_dane.get("kategoria_osiagniecia", "Inne") # Używamy zdefiniowanej kategorii
+                kategoria = os_bazowe_dane.get("kategoria_osiagniecia", "Inne")
                 if kategoria not in lista_opisow_kategorie:
                     lista_opisow_kategorie[kategoria] = []
 
@@ -403,39 +471,38 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
                 tiery_opis = []
                 for tier_dane in os_bazowe_dane.get("tiery", []):
                     nazwa_tieru = tier_dane.get("nazwa_tieru", "Tier")
-                    opis_tieru_tieru = tier_dane.get("opis_tieru", "Brak opisu tieru.") 
+                    opis_tieru_tieru = tier_dane.get("opis_tieru", "Brak opisu tieru.")
                     wartosc_warunku = tier_dane.get("wartosc_warunku")
                     typ_warunku = os_bazowe_dane.get("typ_warunku_bazowy", "nieznany")
-                    odznaka_tieru = tier_dane.get("odznaka_emoji", "") # Pobieramy odznakę
+                    odznaka_tieru = tier_dane.get("odznaka_emoji", "")
 
                     nagrody_str_list = []
                     if tier_dane.get("nagroda_xp", 0) > 0: nagrody_str_list.append(f"{tier_dane['nagroda_xp']} XP")
                     if tier_dane.get("nagroda_dukaty", 0) > 0: nagrody_str_list.append(f"{tier_dane['nagroda_dukaty']} ✨")
+                    if tier_dane.get("nagroda_krysztaly", 0) > 0: nagrody_str_list.append(f"{tier_dane['nagroda_krysztaly']} {config.SYMBOL_WALUTY_PREMIUM}")
                     if tier_dane.get("nagroda_rola_id") and context.guild:
                         try:
                             rola = context.guild.get_role(int(tier_dane["nagroda_rola_id"]))
                             if rola: nagrody_str_list.append(f"Rola: {rola.mention}")
-                        except: pass 
+                        except: pass
                     
                     nagrody_str = ", ".join(nagrody_str_list) if nagrody_str_list else "Chwała"
                     warunek_str = f"(Warunek: {typ_warunku.replace('_', ' ')} >= {wartosc_warunku})"
-                    # Dodajemy odznakę do opisu tieru
                     tiery_opis.append(f"  - {odznaka_tieru} **{nazwa_tieru}**: _{opis_tieru_tieru}_ {warunek_str}\n    *Nagroda: {nagrody_str}*")
                 
                 tiery_opis_str = "\n".join(tiery_opis) if tiery_opis else "  Brak zdefiniowanych tierów."
                 lista_opisow_kategorie[kategoria].append(f"{ikona} **{nazwa_bazowa}**\n_{opis_bazowy}_\n{tiery_opis_str}")
 
-            if not lista_opisow_kategorie: 
+            if not lista_opisow_kategorie:
                  embed.description = "W Kronikach nie ma obecnie jawnych bohaterskich czynów do odkrycia."
             else:
                 final_description_parts = []
-                # Sortowanie kategorii dla spójności (opcjonalne)
                 for kategoria in sorted(lista_opisow_kategorie.keys()):
                     opisy_w_kategorii = lista_opisow_kategorie[kategoria]
-                    final_description_parts.append(f"\n**� Kategoria: {kategoria}**\n" + "\n\n".join(opisy_w_kategorii))
+                    final_description_parts.append(f"\n**✨ Kategoria: {kategoria}**\n" + "\n\n".join(opisy_w_kategorii))
                 
                 final_description = "\n".join(final_description_parts)
-                if len(final_description) > 4000: 
+                if len(final_description) > 4000:
                     final_description = final_description[:3990] + "\n... (więcej osiągnięć dostępnych)"
                 embed.description = final_description.strip()
         

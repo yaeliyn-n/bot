@@ -1,3 +1,4 @@
+# WERSJA KODU: BOT_PY_VERY_FINAL_CHECK_27_05_A
 """
 Copyright © Krypton 2019-Present - https://github.com/kkrypt0nn (https://krypton.ninja)
 Opis:
@@ -257,6 +258,7 @@ class BotDiscord(commands.Bot):
         self.zadanie_czyszczenia_bonusow.start()
         self.zadanie_sprawdzania_rol_czasowych.start()
         self.zadanie_resetowania_misji.start()
+        self.zadanie_konca_sezonu_miesiecznego.start()
 
     async def _create_bot_embed(self, context: typing.Optional[Context], title: str, description: str = "", color: discord.Color = config.KOLOR_BOT_GLOWNY) -> discord.Embed:
         embed = discord.Embed(title=title, description=description, color=color, timestamp=datetime.now(UTC))
@@ -319,7 +321,10 @@ class BotDiscord(commands.Bot):
                 await kanal_do_wyslania.send(embed=embed)
             except discord.Forbidden: self.logger.warning(f"Brak uprawnień do wysłania wiad. o awansie na {kanal_do_wyslania.name}.")
 
-    async def sprawdz_i_awansuj(self, member: discord.Member, guild: discord.Guild):
+    async def sprawdz_i_awansuj(self, member: discord.Member, guild: discord.Guild, _processed_level_missions: typing.Optional[set[int]] = None):
+        if _processed_level_missions is None:
+            _processed_level_missions = set()
+
         if self.baza_danych is None: return
         user_id, server_id = member.id, guild.id
         dane_uzytkownika_pelne = await self.baza_danych.pobierz_lub_stworz_doswiadczenie(user_id, server_id)
@@ -331,13 +336,15 @@ class BotDiscord(commands.Bot):
             await self.baza_danych.aktualizuj_doswiadczenie(user_id, server_id, nowy_poziom=nowy_poziom_po_awansie)
             dukaty_za_poziom = config.DUKATY_ZA_POZIOM
 
-            await self.baza_danych.aktualizuj_portfel(user_id, server_id, ilosc_dukatow_do_dodania=dukaty_za_poziom)
-            dane_portfela_po_awansie = await self.baza_danych.pobierz_portfel(user_id, server_id)
-            nowe_saldo_dukatow_val = dane_portfela_po_awansie[2] if dane_portfela_po_awansie else 0
+            _, nowe_saldo_dukatow_val = await self.baza_danych.aktualizuj_portfel(user_id, server_id, ilosc_dukatow_do_dodania=dukaty_za_poziom)
 
             await self.wyslij_wiadomosc_o_awansie(member, guild, nowy_poziom_po_awansie, dukaty_za_poziom, nowe_saldo_dukatow_val)
             await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "poziom_xp", nowy_poziom_po_awansie)
-            await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "osiagniecie_poziomu_xp", nowy_poziom_po_awansie)
+            
+            if nowy_poziom_po_awansie not in _processed_level_missions:
+                await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "osiagniecie_poziomu_xp", nowy_poziom_po_awansie)
+                _processed_level_missions.add(nowy_poziom_po_awansie)
+
 
             nagroda_rola_dane = await self.baza_danych.pobierz_nagrode_za_poziom(server_id, nowy_poziom_po_awansie)
             if nagroda_rola_dane:
@@ -352,9 +359,9 @@ class BotDiscord(commands.Bot):
                             await kanal_do_wyslania_rola.send(embed=embed_rola)
                     except discord.Forbidden: self.logger.warning(f"Brak uprawnień do nadania roli '{rola.name}'.")
                 else: self.logger.warning(f"Nie znaleziono roli o ID {rola_id_int} (nagroda za poziom).")
-            await self.sprawdz_i_awansuj(member, guild)
+            await self.sprawdz_i_awansuj(member, guild, _processed_level_missions) # Przekazanie zbioru dalej
 
-    async def sprawdz_i_przyznaj_osiagniecia(self, member: discord.Member, guild: discord.Guild, typ_sprawdzanego_warunku: typing.Optional[str] = None, aktualna_wartosc_warunku: typing.Optional[typing.Any] = None): # Zmieniono typ aktualna_wartosc_warunku na Any
+    async def sprawdz_i_przyznaj_osiagniecia(self, member: discord.Member, guild: discord.Guild, typ_sprawdzanego_warunku: typing.Optional[str] = None, aktualna_wartosc_warunku: typing.Optional[typing.Any] = None, dodatkowe_dane: typing.Optional[dict] = None):
         if self.baza_danych is None: return
 
         user_id_str, server_id_str = str(member.id), str(guild.id)
@@ -369,6 +376,8 @@ class BotDiscord(commands.Bot):
         dane_portfela = await self.baza_danych.pobierz_portfel(member.id, guild.id)
         if dane_portfela: ilosc_dukatow_uzytkownika = dane_portfela[2]
 
+        liczba_wygranych_konkursow_val = await self.baza_danych.pobierz_liczbe_wygranych_konkursow(user_id_str, server_id_str)
+
         for os_bazowe_id, os_bazowe_dane in self.DEFINICJE_OSIAGNIEC.items():
             typ_warunku_dla_bazowego = os_bazowe_dane.get("typ_warunku_bazowy")
 
@@ -381,7 +390,6 @@ class BotDiscord(commands.Bot):
                 warunek_spelniony = False
                 wartosc_warunku_tieru = tier_dane["wartosc_warunku"]
 
-                # Logika sprawdzania warunków osiągnięć
                 if typ_warunku_dla_bazowego == "liczba_wiadomosci" and (typ_sprawdzanego_warunku == "liczba_wiadomosci" or typ_sprawdzanego_warunku is None):
                     if liczba_wiadomosci_uzytkownika >= wartosc_warunku_tieru: warunek_spelniony = True
                 elif typ_warunku_dla_bazowego == "liczba_reakcji" and (typ_sprawdzanego_warunku == "liczba_reakcji" or typ_sprawdzanego_warunku is None):
@@ -401,12 +409,23 @@ class BotDiscord(commands.Bot):
                 elif typ_warunku_dla_bazowego == "odkrycie_sekretu_biblioteki" and (typ_sprawdzanego_warunku == "odkrycie_sekretu_biblioteki" or typ_sprawdzanego_warunku is None):
                     if aktualna_wartosc_warunku is not None and int(aktualna_wartosc_warunku) >= wartosc_warunku_tieru:
                         warunek_spelniony = True
-                # --- DODANA OBSŁUGA NOWEGO TYPU WARUNKU ---
                 elif typ_warunku_dla_bazowego == "uzycie_specjalnej_komendy" and (typ_sprawdzanego_warunku == "uzycie_specjalnej_komendy" or typ_sprawdzanego_warunku is None):
-                    # Zakładamy, że aktualna_wartosc_warunku to np. 1 jeśli komenda została użyta
                     if aktualna_wartosc_warunku is not None and int(aktualna_wartosc_warunku) >= wartosc_warunku_tieru:
                         warunek_spelniony = True
-                # --- KONIEC DODANEJ OBSŁUGI ---
+                elif typ_warunku_dla_bazowego == "liczba_wiadomosci_na_kanale" and (typ_sprawdzanego_warunku == "liczba_wiadomosci_na_kanale" or typ_sprawdzanego_warunku is None):
+                    id_kanalu_warunku_osiagniecia = os_bazowe_dane.get("id_kanalu_warunku")
+                    if id_kanalu_warunku_osiagniecia and dodatkowe_dane and str(dodatkowe_dane.get("kanal_id")) == str(id_kanalu_warunku_osiagniecia):
+                        if aktualna_wartosc_warunku is not None and int(aktualna_wartosc_warunku) >= wartosc_warunku_tieru:
+                            warunek_spelniony = True
+                elif typ_warunku_dla_bazowego == "liczba_wygranych_konkursow" and (typ_sprawdzanego_warunku == "liczba_wygranych_konkursow" or typ_sprawdzanego_warunku is None):
+                    sprawdzana_liczba_wygranych = int(aktualna_wartosc_warunku) if typ_sprawdzanego_warunku == "liczba_wygranych_konkursow" and aktualna_wartosc_warunku is not None else liczba_wygranych_konkursow_val
+                    if sprawdzana_liczba_wygranych >= wartosc_warunku_tieru:
+                        warunek_spelniony = True
+                elif typ_warunku_dla_bazowego == "liczba_uzyc_komend_kategorii" and (typ_sprawdzanego_warunku == "liczba_uzyc_komend_kategorii" or typ_sprawdzanego_warunku is None):
+                    kategoria_komendy_warunku_osiagniecia = os_bazowe_dane.get("kategoria_komendy_warunku")
+                    if kategoria_komendy_warunku_osiagniecia and dodatkowe_dane and dodatkowe_dane.get("kategoria_komendy") == kategoria_komendy_warunku_osiagniecia:
+                        if aktualna_wartosc_warunku is not None and int(aktualna_wartosc_warunku) >= wartosc_warunku_tieru:
+                            warunek_spelniony = True
 
                 if warunek_spelniony:
                     czy_nowo_zdobyte = await self.baza_danych.oznacz_osiagniecie_jako_zdobyte(user_id_str, server_id_str, tier_id)
@@ -419,6 +438,7 @@ class BotDiscord(commands.Bot):
 
                         nagroda_xp = tier_dane.get("nagroda_xp", 0)
                         nagroda_dukaty_val = tier_dane.get("nagroda_dukaty", 0)
+                        nagroda_krysztaly_val = tier_dane.get("nagroda_krysztaly", 0)
                         nagroda_rola_id_str = tier_dane.get("nagroda_rola_id")
 
                         embed_title = f"{ikona_osiagniecia} Nowe Osiągnięcie!"
@@ -426,6 +446,8 @@ class BotDiscord(commands.Bot):
 
                         if nagroda_xp > 0: embed_description += f"\n\n🎁 +**{nagroda_xp}** XP!"
                         if nagroda_dukaty_val > 0: embed_description += f"\n💰 +**{nagroda_dukaty_val}** ✨ Dukatów!"
+                        if nagroda_krysztaly_val > 0: embed_description += f"\n💠 +**{nagroda_krysztaly_val}** {config.SYMBOL_WALUTY_PREMIUM} {config.NAZWA_WALUTY_PREMIUM}!"
+
 
                         if nagroda_rola_id_str:
                             try:
@@ -441,11 +463,11 @@ class BotDiscord(commands.Bot):
 
                         if nagroda_xp > 0:
                             await self.baza_danych.aktualizuj_doswiadczenie(member.id, guild.id, xp_dodane=nagroda_xp)
-                            await self.sprawdz_i_awansuj(member, guild) # Sprawdzenie awansu po dodaniu XP
-                        if nagroda_dukaty_val > 0:
-                            await self.baza_danych.aktualizuj_portfel(member.id, guild.id, ilosc_dukatow_do_dodania=nagroda_dukaty_val)
+                            await self.sprawdz_i_awansuj(member, guild)
+                        if nagroda_dukaty_val > 0 or nagroda_krysztaly_val > 0:
+                            await self.baza_danych.aktualizuj_portfel(member.id, guild.id, ilosc_dukatow_do_dodania=nagroda_dukaty_val, ilosc_krysztalow_do_dodania=nagroda_krysztaly_val)
                             dane_portfela_po_nagrodzie = await self.baza_danych.pobierz_portfel(member.id, guild.id)
-                            if dane_portfela_po_nagrodzie: # Sprawdzenie osiągnięć związanych z walutą
+                            if dane_portfela_po_nagrodzie:
                                 await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "ilosc_dukatow", dane_portfela_po_nagrodzie[2])
 
                         kanal_do_powiadomien = guild.system_channel or (guild.text_channels[0] if guild.text_channels else None)
@@ -453,13 +475,14 @@ class BotDiscord(commands.Bot):
                             try: await kanal_do_powiadomien.send(embed=embed_osiagniecie)
                             except discord.Forbidden: self.logger.warning(f"Brak uprawnień do wysłania wiadomości o osiągnięciu na kanale {kanal_do_powiadomien.name}.")
                             except Exception as e_send: self.logger.error(f"Nieoczekiwany błąd podczas wysyłania wiadomości o osiągnięciu: {e_send}", exc_info=True)
-                        else: # Próba wysłania DM jako fallback
+                        else:
                             try: await member.send(embed=embed_osiagniecie)
                             except discord.Forbidden: self.logger.warning(f"Nie można wysłać DM o osiągnięciu do {member.display_name} (DM zablokowane lub brak uprawnień).")
                             except Exception as e_dm: self.logger.error(f"Nieoczekiwany błąd podczas wysyłania DM o osiągnięciu: {e_dm}", exc_info=True)
-                        break # Przerwij pętlę tierów dla tego bazowego osiągnięcia, jeśli tier został przyznany
+                        break
 
-    async def przyznaj_xp(self, member: discord.Member, guild: discord.Guild, kanal: typing.Optional[discord.abc.GuildChannel | discord.Thread], bazowe_xp_min: int, bazowe_xp_max: int, cooldown_ts_field: typing.Optional[str], cooldown_value: int, event_type: str, inkrementuj_licznik_typ: typing.Optional[str] = None):
+
+    async def przyznaj_xp(self, member: discord.Member, guild: discord.Guild, kanal: typing.Optional[discord.abc.GuildChannel | discord.Thread], bazowe_xp_min: int, bazowe_xp_max: int, cooldown_ts_field: typing.Optional[str], cooldown_value: int, event_type: str, inkrementuj_licznik_typ: typing.Optional[str] = None, dodatkowe_dane_dla_osiagniec: typing.Optional[dict] = None):
         if self.baza_danych is None or member.bot or not guild: return
 
         konfiguracja_serwera = self.pobierz_konfiguracje_xp_serwera(guild.id)
@@ -523,7 +546,7 @@ class BotDiscord(commands.Bot):
             xp_bonus_streaka = bonus_za_dzien_streaka
 
         xp_finalne_do_dodania = xp_po_mnoznikach + xp_bonus_streaka
-        kwargs_aktualizacji = {}
+        kwargs_aktualizacji: dict[str, typing.Any] = {}
         if xp_finalne_do_dodania > 0: kwargs_aktualizacji["xp_dodane"] = xp_finalne_do_dodania
         if czy_aktualizowac_streak_w_bazie:
             kwargs_aktualizacji["nowy_streak_dni"] = nowy_streak_dni_do_zapisu
@@ -536,19 +559,25 @@ class BotDiscord(commands.Bot):
         if kwargs_aktualizacji:
             await self.baza_danych.aktualizuj_doswiadczenie(user_id, server_id, **kwargs_aktualizacji)
 
+
         if xp_finalne_do_dodania > 0:
             self.logger.info(f"Przyznano {xp_finalne_do_dodania} XP dla {member.display_name} za {event_type}.")
             await self.sprawdz_i_awansuj(member, guild)
             if czy_aktualizowac_streak_w_bazie:
                 await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "dlugosc_streaka", nowy_streak_dni_do_zapisu)
+                await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "osiagnij_x_streaka", nowy_streak_dni_do_zapisu)
         elif czy_aktualizowac_streak_w_bazie:
             await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "dlugosc_streaka", nowy_streak_dni_do_zapisu)
+            await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "osiagnij_x_streaka", nowy_streak_dni_do_zapisu)
 
         if inkrementuj_licznik_typ:
             dane_po_inkrementacji_full = await self.baza_danych.pobierz_lub_stworz_doswiadczenie(user_id, server_id)
             if inkrementuj_licznik_typ == "wiadomosc":
                 await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "liczba_wiadomosci", dane_po_inkrementacji_full[10])
                 await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "liczba_wiadomosci_od_resetu", 1)
+                if kanal and dodatkowe_dane_dla_osiagniec and "kanal_id" in dodatkowe_dane_dla_osiagniec:
+                    nowa_liczba_na_kanale = await self.baza_danych.inkrementuj_liczbe_wiadomosci_na_kanale(str(user_id), str(server_id), str(kanal.id))
+                    await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "liczba_wiadomosci_na_kanale", nowa_liczba_na_kanale, dodatkowe_dane={"kanal_id": kanal.id})
             elif inkrementuj_licznik_typ == "reakcja":
                 await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "liczba_reakcji", dane_po_inkrementacji_full[11])
                 await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "liczba_reakcji_od_resetu", 1)
@@ -556,8 +585,6 @@ class BotDiscord(commands.Bot):
         dane_portfela_po_zmianie = await self.baza_danych.pobierz_portfel(user_id, server_id)
         if dane_portfela_po_zmianie:
             await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "ilosc_dukatow", dane_portfela_po_zmianie[2])
-
-    # --- NOWE METODY I ZADANIA DLA SYSTEMU MISJI ---
 
     def _get_mission_reset_timestamp(self, mission_type: str) -> int:
         if mission_type == "dzienna":
@@ -600,6 +627,16 @@ class BotDiscord(commands.Bot):
                             nowy_postep_warunku = await self.baza_danych.aktualizuj_postep_misji(user_id_str, server_id_str, misja_id, typ_warunku_misji, wartosc_do_dodania=wartosc_akcji)
                     elif typ_akcji == "osiagniecie_poziomu_xp":
                         nowy_postep_warunku = wartosc_akcji
+                    elif typ_akcji == "wygraj_konkurs_od_resetu":
+                        nowy_postep_warunku = await self.baza_danych.aktualizuj_postep_misji(user_id_str, server_id_str, misja_id, typ_warunku_misji, wartosc_do_dodania=wartosc_akcji)
+                    elif typ_akcji == "uzyj_przedmiotu_ze_sklepu_od_resetu":
+                        if dodatkowe_dane and dodatkowe_dane.get("id_przedmiotu") == warunek_def.get("id_przedmiotu"):
+                            nowy_postep_warunku = await self.baza_danych.aktualizuj_postep_misji(user_id_str, server_id_str, misja_id, typ_warunku_misji, wartosc_do_dodania=wartosc_akcji)
+                    elif typ_akcji == "osiagnij_x_streaka":
+                        if wartosc_akcji > aktualny_postep_warunku:
+                             nowy_postep_warunku = await self.baza_danych.aktualizuj_postep_misji(user_id_str, server_id_str, misja_id, typ_warunku_misji, ustaw_wartosc=wartosc_akcji)
+                        else:
+                            nowy_postep_warunku = aktualny_postep_warunku
                     else:
                         nowy_postep_warunku = await self.baza_danych.aktualizuj_postep_misji(user_id_str, server_id_str, misja_id, typ_warunku_misji, wartosc_do_dodania=wartosc_akcji)
 
@@ -706,6 +743,117 @@ class BotDiscord(commands.Bot):
     @zadanie_sprawdzania_rol_czasowych.before_loop
     async def przed_zadaniem_sprawdzania_rol_czasowych(self): await self.wait_until_ready()
 
+    @tasks.loop(hours=1)
+    async def zadanie_konca_sezonu_miesiecznego(self):
+        if self.baza_danych is None:
+            self.logger.warning("Baza danych niedostępna, pomijam zadanie końca sezonu.")
+            return
+
+        teraz = datetime.now(UTC)
+        if teraz.day == 1 and teraz.hour == 0 and teraz.minute < 5: 
+            self.logger.info(f"Rozpoczynam zadanie końca sezonu miesięcznego dla {teraz.year}-{teraz.month-1 if teraz.month > 1 else 12}.")
+
+            poprzedni_miesiac_dt = teraz - timedelta(days=1)
+            rok_sezonu = poprzedni_miesiac_dt.year
+            miesiac_sezonu = poprzedni_miesiac_dt.month
+
+            self.logger.info(f"Przetwarzanie rankingu miesięcznego XP za {rok_sezonu}-{miesiac_sezonu}.")
+
+            for guild in self.guilds:
+                try:
+                    ranking_miesieczny = await self.baza_danych.pobierz_ranking_miesiecznego_xp(str(guild.id), rok_sezonu, miesiac_sezonu, limit=5)
+                    if not ranking_miesieczny:
+                        self.logger.info(f"Brak danych rankingowych dla serwera {guild.name} ({guild.id}) za {rok_sezonu}-{miesiac_sezonu}.")
+                        continue
+
+                    self.logger.info(f"Ranking miesięczny XP dla {guild.name} ({rok_sezonu}-{miesiac_sezonu}): {ranking_miesieczny}")
+
+                    embed_wyniki = discord.Embed(
+                        title=f"🏆 Zakończenie Sezonu Rankingu XP - {miesiac_sezonu}/{rok_sezonu} 🏆",
+                        description=f"Oto najlepsi Kronikarze serwera **{guild.name}** w minionym miesiącu!",
+                        color=config.KOLOR_RANKINGU_SEZONOWEGO,
+                        timestamp=teraz
+                    )
+                    if guild.icon:
+                        embed_wyniki.set_thumbnail(url=guild.icon.url)
+
+                    medale = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+                    opisy_zwyciezcow = []
+
+                    for i, (user_id_str, xp_miesieczne_val) in enumerate(ranking_miesieczny):
+                        miejsce = i + 1
+                        member = guild.get_member(int(user_id_str))
+                        nazwa_uzytkownika = ""
+                        if not member:
+                            try:
+                                user_obj = await self.fetch_user(int(user_id_str))
+                                nazwa_uzytkownika = user_obj.display_name if user_obj else f"Nieznany ({user_id_str})"
+                            except discord.NotFound:
+                                nazwa_uzytkownika = f"Nieznany ({user_id_str})"
+                        else:
+                            nazwa_uzytkownika = member.display_name
+
+                        opisy_zwyciezcow.append(f"{medale[i] if i < len(medale) else f'**{miejsce}.**'} {nazwa_uzytkownika} - **{xp_miesieczne_val} XP**")
+
+                        if miejsce in config.NAGRODY_RANKINGU_XP_MIESIECZNEGO:
+                            nagroda_def = config.NAGRODY_RANKINGU_XP_MIESIECZNEGO[miejsce]
+                            opis_nagrody_czesci = []
+
+                            if nagroda_def.get("dukaty", 0) > 0 and self.baza_danych:
+                                await self.baza_danych.aktualizuj_portfel(int(user_id_str), guild.id, ilosc_dukatow_do_dodania=nagroda_def["dukaty"])
+                                opis_nagrody_czesci.append(f"{nagroda_def['dukaty']} ✨")
+                            if nagroda_def.get("krysztaly", 0) > 0 and self.baza_danych:
+                                await self.baza_danych.aktualizuj_portfel(int(user_id_str), guild.id, ilosc_krysztalow_do_dodania=nagroda_def["krysztaly"])
+                                opis_nagrody_czesci.append(f"{nagroda_def['krysztaly']} {config.SYMBOL_WALUTY_PREMIUM}")
+
+                            rola_id_nagrody = nagroda_def.get("rola_id")
+                            if rola_id_nagrody and member and isinstance(member, discord.Member):
+                                rola_do_nadania = guild.get_role(rola_id_nagrody)
+                                if rola_do_nadania:
+                                    try:
+                                        await member.add_roles(rola_do_nadania, reason=f"Nagroda za Top {miejsce} w rankingu miesięcznym XP ({miesiac_sezonu}/{rok_sezonu})")
+                                        opis_nagrody_czesci.append(f"Rola: {rola_do_nadania.mention}")
+                                    except discord.Forbidden:
+                                        self.logger.warning(f"Brak uprawnień do nadania roli nagrody {rola_do_nadania.name} użytkownikowi {member.display_name} na serwerze {guild.name}.")
+                                    except Exception as e_role:
+                                        self.logger.error(f"Błąd nadawania roli nagrody: {e_role}", exc_info=True)
+                                else:
+                                    self.logger.warning(f"Nie znaleziono roli nagrody o ID {rola_id_nagrody} na serwerze {guild.name}.")
+                            
+                            if nagroda_def.get("opis_dodatkowy"):
+                                opis_nagrody_czesci.append(nagroda_def["opis_dodatkowy"])
+
+                            if opis_nagrody_czesci:
+                                opisy_zwyciezcow[-1] += f" (Nagroda: {', '.join(opis_nagrody_czesci)})"
+
+                    embed_wyniki.add_field(name="🏆 Najlepsi Kronikarze Miesiąca:", value="\n".join(opisy_zwyciezcow), inline=False)
+                    embed_wyniki.set_footer(text=f"Gratulacje! Nowy sezon rankingowy właśnie się rozpoczął! | Kroniki Elary")
+
+                    kanal_ogloszen_id = config.ID_KANALU_OGLOSZEN_RANKINGU_MIESIECZNEGO
+                    if kanal_ogloszen_id:
+                        kanal_ogloszen = guild.get_channel(kanal_ogloszen_id)
+                        if kanal_ogloszen and isinstance(kanal_ogloszen, discord.TextChannel):
+                            try:
+                                await kanal_ogloszen.send(embed=embed_wyniki)
+                                self.logger.info(f"Ogłoszono wyniki rankingu miesięcznego XP dla {guild.name} na kanale {kanal_ogloszen.name}.")
+                            except discord.Forbidden:
+                                self.logger.warning(f"Brak uprawnień do wysłania ogłoszenia rankingu na kanale {kanal_ogloszen.name} ({guild.name}).")
+                            except Exception as e_send:
+                                self.logger.error(f"Błąd wysyłania ogłoszenia rankingu: {e_send}", exc_info=True)
+                        else:
+                            self.logger.warning(f"Nie znaleziono kanału ogłoszeń rankingu ({kanal_ogloszen_id}) na serwerze {guild.name} lub nie jest to kanał tekstowy.")
+                    else:
+                        self.logger.warning(f"ID_KANALU_OGLOSZEN_RANKINGU_MIESIECZNEGO nie jest skonfigurowane.")
+
+                except Exception as e:
+                    self.logger.error(f"Błąd podczas przetwarzania końca sezonu dla serwera {guild.name} ({guild.id}): {e}", exc_info=True)
+            self.logger.info("Zakończono zadanie końca sezonu miesięcznego.")
+
+    @zadanie_konca_sezonu_miesiecznego.before_loop
+    async def przed_zadaniem_konca_sezonu_miesiecznego(self):
+        await self.wait_until_ready()
+        self.logger.info("Pętla końca sezonu miesięcznego gotowa do startu.")
+
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -718,7 +866,8 @@ class BotDiscord(commands.Bot):
             message.author, message.guild, message.channel,
             config.XP_ZA_WIADOMOSC_MIN, config.XP_ZA_WIADOMOSC_MAX,
             "ostatnia_wiadomosc_timestamp", config.COOLDOWN_XP_WIADOMOSC_SEKUNDY,
-            "napisanie wiadomości", inkrementuj_licznik_typ="wiadomosc"
+            "napisanie wiadomości", inkrementuj_licznik_typ="wiadomosc",
+            dodatkowe_dane_dla_osiagniec={"kanal_id": message.channel.id}
         )
         if self.intents.message_content: await self.process_commands(message)
 
@@ -771,7 +920,7 @@ class BotDiscord(commands.Bot):
 
             if not self.aktywni_na_glosowym_start_time[server_id]: del self.aktywni_na_glosowym_start_time[server_id]
 
-    @tasks.loop(minutes=5.0)
+    @tasks.loop(minutes=config.XP_ZA_GLOS_CO_ILE_MINUT)
     async def zadanie_xp_za_glos(self):
         if self.baza_danych is None: return
         for guild_obj in self.guilds:
@@ -779,18 +928,21 @@ class BotDiscord(commands.Bot):
                 for user_id in list(self.aktywni_na_glosowym_start_time[guild_obj.id].keys()):
                     member = guild_obj.get_member(user_id)
                     if not member or member.bot:
-                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]: del self.aktywni_na_glosowym_start_time[guild_obj.id][user_id]
+                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]:
+                            del self.aktywni_na_glosowym_start_time[guild_obj.id][user_id]
                         continue
-                    if member.voice and member.voice.channel and (member.voice.channel.guild.afk_channel is None or member.voice.channel.guild.afk_channel.id != member.voice.channel.id) \
-                       and not member.voice.self_deaf and not member.voice.self_mute \
-                       and not member.voice.deaf and not member.voice.mute:
+                    if member.voice and member.voice.channel and \
+                       (member.voice.channel.guild.afk_channel is None or member.voice.channel.guild.afk_channel.id != member.voice.channel.id) and \
+                       not member.voice.self_deaf and not member.voice.self_mute and \
+                       not member.voice.deaf and not member.voice.mute:
                         await self.przyznaj_xp(
                             member, guild_obj, member.voice.channel,
                             config.XP_ZA_GLOS_ILOSC_MIN, config.XP_ZA_GLOS_ILOSC_MAX,
                             None, 0, "aktywność na kanale głosowym"
                         )
                     else:
-                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]: del self.aktywni_na_glosowym_start_time[guild_obj.id][user_id]
+                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]:
+                            del self.aktywni_na_glosowym_start_time[guild_obj.id][user_id]
             if guild_obj.id in self.aktywni_na_glosowym_start_time and not self.aktywni_na_glosowym_start_time[guild_obj.id]:
                 del self.aktywni_na_glosowym_start_time[guild_obj.id]
 
@@ -801,7 +953,7 @@ class BotDiscord(commands.Bot):
     async def zadanie_live_ranking(self):
         if self.baza_danych is None: return
         teraz = datetime.now(UTC)
-        medale = ["🥇", "🥈", "�"]
+        medale = ["🥇", "🥈", "🥉"]
         for guild_id, config_data in list(self.konfiguracja_xp_serwera.items()):
             if config_data.get("live_ranking_message_id") and config_data.get("live_ranking_channel_id"):
                 guild_obj = self.get_guild(guild_id)
@@ -849,16 +1001,131 @@ class BotDiscord(commands.Bot):
     @zadanie_czyszczenia_bonusow.before_loop
     async def przed_zadaniem_czyszczenia_bonusow(self): await self.wait_until_ready()
 
+    @tasks.loop(hours=1)
+    async def zadanie_konca_sezonu_miesiecznego(self):
+        if self.baza_danych is None:
+            self.logger.warning("Baza danych niedostępna, pomijam zadanie końca sezonu.")
+            return
+
+        teraz = datetime.now(UTC)
+        if teraz.day == 1 and teraz.hour == 0 and teraz.minute < 5: 
+            self.logger.info(f"Rozpoczynam zadanie końca sezonu miesięcznego dla {teraz.year}-{teraz.month-1 if teraz.month > 1 else 12}.")
+
+            poprzedni_miesiac_dt = teraz - timedelta(days=1)
+            rok_sezonu = poprzedni_miesiac_dt.year
+            miesiac_sezonu = poprzedni_miesiac_dt.month
+
+            self.logger.info(f"Przetwarzanie rankingu miesięcznego XP za {rok_sezonu}-{miesiac_sezonu}.")
+
+            for guild in self.guilds:
+                try:
+                    ranking_miesieczny = await self.baza_danych.pobierz_ranking_miesiecznego_xp(str(guild.id), rok_sezonu, miesiac_sezonu, limit=5)
+                    if not ranking_miesieczny:
+                        self.logger.info(f"Brak danych rankingowych dla serwera {guild.name} ({guild.id}) za {rok_sezonu}-{miesiac_sezonu}.")
+                        continue
+
+                    self.logger.info(f"Ranking miesięczny XP dla {guild.name} ({rok_sezonu}-{miesiac_sezonu}): {ranking_miesieczny}")
+
+                    embed_wyniki = discord.Embed(
+                        title=f"🏆 Zakończenie Sezonu Rankingu XP - {miesiac_sezonu}/{rok_sezonu} 🏆",
+                        description=f"Oto najlepsi Kronikarze serwera **{guild.name}** w minionym miesiącu!",
+                        color=config.KOLOR_RANKINGU_SEZONOWEGO,
+                        timestamp=teraz
+                    )
+                    if guild.icon:
+                        embed_wyniki.set_thumbnail(url=guild.icon.url)
+
+                    medale = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+                    opisy_zwyciezcow = []
+
+                    for i, (user_id_str, xp_miesieczne_val) in enumerate(ranking_miesieczny):
+                        miejsce = i + 1
+                        member = guild.get_member(int(user_id_str))
+                        nazwa_uzytkownika = ""
+                        if not member:
+                            try:
+                                user_obj = await self.fetch_user(int(user_id_str))
+                                nazwa_uzytkownika = user_obj.display_name if user_obj else f"Nieznany ({user_id_str})"
+                            except discord.NotFound:
+                                nazwa_uzytkownika = f"Nieznany ({user_id_str})"
+                        else:
+                            nazwa_uzytkownika = member.display_name
+
+                        opisy_zwyciezcow.append(f"{medale[i] if i < len(medale) else f'**{miejsce}.**'} {nazwa_uzytkownika} - **{xp_miesieczne_val} XP**")
+
+                        if miejsce in config.NAGRODY_RANKINGU_XP_MIESIECZNEGO:
+                            nagroda_def = config.NAGRODY_RANKINGU_XP_MIESIECZNEGO[miejsce]
+                            opis_nagrody_czesci = []
+
+                            if nagroda_def.get("dukaty", 0) > 0 and self.baza_danych:
+                                await self.baza_danych.aktualizuj_portfel(int(user_id_str), guild.id, ilosc_dukatow_do_dodania=nagroda_def["dukaty"])
+                                opis_nagrody_czesci.append(f"{nagroda_def['dukaty']} ✨")
+                            if nagroda_def.get("krysztaly", 0) > 0 and self.baza_danych:
+                                await self.baza_danych.aktualizuj_portfel(int(user_id_str), guild.id, ilosc_krysztalow_do_dodania=nagroda_def["krysztaly"])
+                                opis_nagrody_czesci.append(f"{nagroda_def['krysztaly']} {config.SYMBOL_WALUTY_PREMIUM}")
+
+                            rola_id_nagrody = nagroda_def.get("rola_id")
+                            if rola_id_nagrody and member and isinstance(member, discord.Member):
+                                rola_do_nadania = guild.get_role(rola_id_nagrody)
+                                if rola_do_nadania:
+                                    try:
+                                        await member.add_roles(rola_do_nadania, reason=f"Nagroda za Top {miejsce} w rankingu miesięcznym XP ({miesiac_sezonu}/{rok_sezonu})")
+                                        opis_nagrody_czesci.append(f"Rola: {rola_do_nadania.mention}")
+                                    except discord.Forbidden:
+                                        self.logger.warning(f"Brak uprawnień do nadania roli nagrody {rola_do_nadania.name} użytkownikowi {member.display_name} na serwerze {guild.name}.")
+                                    except Exception as e_role:
+                                        self.logger.error(f"Błąd nadawania roli nagrody: {e_role}", exc_info=True)
+                                else:
+                                    self.logger.warning(f"Nie znaleziono roli nagrody o ID {rola_id_nagrody} na serwerze {guild.name}.")
+                            
+                            if nagroda_def.get("opis_dodatkowy"):
+                                opis_nagrody_czesci.append(nagroda_def["opis_dodatkowy"])
+
+                            if opis_nagrody_czesci:
+                                opisy_zwyciezcow[-1] += f" (Nagroda: {', '.join(opis_nagrody_czesci)})"
+
+                    embed_wyniki.add_field(name="🏆 Najlepsi Kronikarze Miesiąca:", value="\n".join(opisy_zwyciezcow), inline=False)
+                    embed_wyniki.set_footer(text=f"Gratulacje! Nowy sezon rankingowy właśnie się rozpoczął! | Kroniki Elary")
+
+                    kanal_ogloszen_id = config.ID_KANALU_OGLOSZEN_RANKINGU_MIESIECZNEGO
+                    if kanal_ogloszen_id:
+                        kanal_ogloszen = guild.get_channel(kanal_ogloszen_id)
+                        if kanal_ogloszen and isinstance(kanal_ogloszen, discord.TextChannel):
+                            try:
+                                await kanal_ogloszen.send(embed=embed_wyniki)
+                                self.logger.info(f"Ogłoszono wyniki rankingu miesięcznego XP dla {guild.name} na kanale {kanal_ogloszen.name}.")
+                            except discord.Forbidden:
+                                self.logger.warning(f"Brak uprawnień do wysłania ogłoszenia rankingu na kanale {kanal_ogloszen.name} ({guild.name}).")
+                            except Exception as e_send:
+                                self.logger.error(f"Błąd wysyłania ogłoszenia rankingu: {e_send}", exc_info=True)
+                        else:
+                            self.logger.warning(f"Nie znaleziono kanału ogłoszeń rankingu ({kanal_ogloszen_id}) na serwerze {guild.name} lub nie jest to kanał tekstowy.")
+                    else:
+                        self.logger.warning(f"ID_KANALU_OGLOSZEN_RANKINGU_MIESIECZNEGO nie jest skonfigurowane.")
+
+                except Exception as e:
+                    self.logger.error(f"Błąd podczas przetwarzania końca sezonu dla serwera {guild.name} ({guild.id}): {e}", exc_info=True)
+            self.logger.info("Zakończono zadanie końca sezonu miesięcznego.")
+
+    @zadanie_konca_sezonu_miesiecznego.before_loop
+    async def przed_zadaniem_konca_sezonu_miesiecznego(self):
+        await self.wait_until_ready()
+        self.logger.info("Pętla końca sezonu miesięcznego gotowa do startu.")
+
+
     @commands.Cog.listener()
     async def on_command_completion(self, context: Context) -> None:
         if not context.command or not context.guild or not isinstance(context.author, discord.Member): return
         self.logger.info(f"Wykonano '{context.command.qualified_name}' przez {context.author} na {context.guild.name if context.guild else 'DM'}.")
+
         await self.aktualizuj_i_sprawdz_misje_po_akcji(context.author, context.guild, "uzycie_komendy", 1, dodatkowe_dane={"nazwa_komendy": context.command.qualified_name})
-        # --- DODANO SPRAWDZANIE OSIĄGNIĘĆ PO UŻYCIU KOMENDY ---
-        await self.sprawdz_i_przyznaj_osiagniecia(context.author, context.guild, "uzycie_specjalnej_komendy", 1) # Przykładowa wartość, można dostosować
-        # --- KONIEC DODANEGO SPRAWDZANIA ---
+        await self.sprawdz_i_przyznaj_osiagniecia(context.author, context.guild, "uzycie_specjalnej_komendy", 1, dodatkowe_dane={"nazwa_komendy": context.command.qualified_name})
         if context.command.cog_name:
-            await self.aktualizuj_i_sprawdz_misje_po_akcji(context.author, context.guild, "uzycie_komendy_kategorii_od_resetu", 1, dodatkowe_dane={"kategoria_komendy": context.command.cog_name.lower()})
+            kategoria_komendy_lower = context.command.cog_name.lower()
+            await self.aktualizuj_i_sprawdz_misje_po_akcji(context.author, context.guild, "uzycie_komendy_kategorii_od_resetu", 1, dodatkowe_dane={"kategoria_komendy": kategoria_komendy_lower})
+            if self.baza_danych:
+                nowa_liczba_uzyc_kategorii = await self.baza_danych.inkrementuj_uzycia_komend_kategorii(str(context.author.id), str(context.guild.id), kategoria_komendy_lower)
+                await self.sprawdz_i_przyznaj_osiagniecia(context.author, context.guild, "liczba_uzyc_komend_kategorii", nowa_liczba_uzyc_kategorii, dodatkowe_dane={"kategoria_komendy": kategoria_komendy_lower})
 
 
     @commands.Cog.listener()
@@ -911,3 +1178,4 @@ if __name__ == "__main__":
     except Exception as e:
         bot.logger.critical(f"Krytyczny błąd podczas uruchamiania Kronik Elary: {e}", exc_info=True)
         sys.exit(f"Krytyczny błąd: {e}")
+

@@ -5,6 +5,7 @@ from discord.ext.commands import Context, has_permissions
 import time
 from datetime import datetime, UTC, timedelta
 import typing
+import random # Dodano import random dla komendy /pracuj
 
 # Import konfiguracji globalnej
 import config
@@ -22,6 +23,11 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
     async def callback(self, interaction: Interaction):
         assert self.view is not None
         view: ShopPurchaseView = self.view # type: ignore
+        
+        # Zapewniamy, że interaction.user jest typu discord.Member, jeśli jesteśmy na serwerze
+        if not isinstance(interaction.user, discord.Member) or not interaction.guild: # Dodano sprawdzenie interaction.guild
+            await interaction.response.send_message("Ta akcja może być wykonana tylko przez członka serwera.", ephemeral=True)
+            return
 
         if interaction.user.id != view.original_author_id:
             await interaction.response.send_message("Tylko osoba, która zainicjowała zakup, może go potwierdzić!", ephemeral=True)
@@ -32,11 +38,9 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
             return
 
         user_id = interaction.user.id
-        server_id = interaction.guild_id if interaction.guild else None
-        if not server_id or not interaction.guild: # Dodatkowe sprawdzenie dla interaction.guild
-             await interaction.response.edit_message(content="Ta akcja musi być wykonana na serwerze.", embed=None, view=None)
-             return
-
+        # server_id jest teraz pewne, bo interaction.guild istnieje
+        server_id = interaction.guild_id 
+        
         koszt_dukatow = self.item_data.get("koszt_dukatow")
         koszt_krysztalow = self.item_data.get("koszt_krysztalow")
 
@@ -81,9 +85,9 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
              czas_wygasniecia_ts = czas_zakupu_ts + self.item_data["czas_trwania_sekundy"]
 
         typ_bonusu_przedmiotu = self.item_data.get("typ_bonusu", "nieznany_typ_bonusu")
-        wartosc_bonusu_przedmiotu = self.item_data.get("wartosc_bonusu", 0.0)
+        wartosc_bonusu_przedmiotu = self.item_data.get("wartosc_bonusu", self.item_data.get("wartosc_mnoznika_bonusowego", 0.0))
 
-        # Logika specyficzna dla typu przedmiotu
+
         wiadomosc_sukcesu_dodatkowa = ""
 
         if typ_bonusu_przedmiotu == "timed_role":
@@ -100,19 +104,16 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
                     await interaction.response.edit_message(content="Błąd: Rola do nadania nie istnieje na tym serwerze. Skontaktuj się z administratorem.", embed=None, view=None)
                     return
 
-                if not isinstance(interaction.user, discord.Member):
-                    await interaction.response.edit_message(content="Błąd: Nie można nadać roli użytkownikowi (brak obiektu Member).", embed=None, view=None)
-                    return
-
+                # interaction.user jest już typu discord.Member dzięki wcześniejszemu sprawdzeniu
                 await interaction.user.add_roles(rola_obj, reason=f"Zakup przedmiotu w sklepie: {self.item_data['nazwa']}")
 
-                if czas_wygasniecia_ts: # Tylko jeśli jest czas wygaśnięcia, dodajemy do bazy ról czasowych
+                if czas_wygasniecia_ts:
                     await view.bot.baza_danych.dodaj_aktywna_role_czasowa(
                         str(user_id), str(server_id), str(rola_id_int),
                         czas_zakupu_ts, czas_wygasniecia_ts, self.item_id
                     )
                     wiadomosc_sukcesu_dodatkowa = f"\n🛡️ Otrzymałeś/aś rolę **{rola_obj.name}**!"
-                else: # Jeśli rola nie ma czasu wygaśnięcia (stała rola ze sklepu)
+                else:
                     wiadomosc_sukcesu_dodatkowa = f"\n🛡️ Otrzymałeś/aś na stałe rolę **{rola_obj.name}**!"
 
                 view.bot.logger.info(f"Przyznano rolę '{rola_obj.name}' użytkownikowi {interaction.user.display_name} po zakupie '{self.item_data['nazwa']}'.")
@@ -130,14 +131,30 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
                 await interaction.response.edit_message(content="Wystąpił nieoczekiwany błąd przy nadawaniu roli. Skontaktuj się z administratorem.", embed=None, view=None)
                 return
         else:
-            # Dla innych typów bonusów (np. xp_mnoznik) dodajemy do posiadane_przedmioty
             await view.bot.baza_danych.dodaj_przedmiot_uzytkownika(
                 str(user_id), str(server_id), self.item_id,
                 czas_zakupu_ts, czas_wygasniecia_ts,
                 typ_bonusu_przedmiotu, wartosc_bonusu_przedmiotu
             )
 
-        czas_trwania_str = view.cog.bot.formatuj_czas(self.item_data.get("czas_trwania_sekundy", 0), precyzyjnie=True) # Zmieniono na view.cog.bot.formatuj_czas
+        # Sprawdzanie misji po zakupie
+        # Upewniamy się, że interaction.guild nie jest None przed przekazaniem
+        if view.bot.baza_danych and interaction.guild:
+            try:
+                # interaction.user jest już typu discord.Member
+                await view.bot.aktualizuj_i_sprawdz_misje_po_akcji(
+                    interaction.user, 
+                    interaction.guild,
+                    "uzyj_przedmiotu_ze_sklepu_od_resetu",
+                    1,
+                    dodatkowe_dane={"id_przedmiotu": self.item_id}
+                )
+                view.bot.logger.info(f"Sprawdzono misje dla {interaction.user.display_name} po zakupie przedmiotu {self.item_id}.")
+            except Exception as e_mission:
+                view.bot.logger.error(f"Błąd podczas aktualizacji misji po zakupie przedmiotu {self.item_id} przez {interaction.user.display_name}: {e_mission}", exc_info=True)
+
+
+        czas_trwania_str = view.cog.bot.formatuj_czas(self.item_data.get("czas_trwania_sekundy", 0), precyzyjnie=True)
         emoji_przedmiotu = self.item_data.get("emoji", "🎉")
         nazwa_waluty_zakupu = "Gwiezdnych Dukatów" if self.currency_to_use == "dukaty" else config.NAZWA_WALUTY_PREMIUM
 
@@ -160,13 +177,9 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
         view.bot.logger.info(f"Użytkownik {interaction.user.display_name} zakupił '{self.item_data['nazwa']}' na serwerze {interaction.guild.name if interaction.guild else 'DM'} za {koszt} {waluta_symbol} ({self.currency_to_use}) poprzez menu.")
 
 
-class CancelPurchaseButton(discord.ui.Button['ShopView']): # Zmieniono typ widoku na ShopView
+class CancelPurchaseButton(discord.ui.Button['ShopView']):
     async def callback(self, interaction: Interaction):
         assert self.view is not None
-        # Ten przycisk powinien być używany w kontekście widoku, który go dodał.
-        # Zakładamy, że self.view to instancja ShopView lub widoku z przyciskami zakupu,
-        # który przechowuje referencje do cog i original_context.
-
         view_parent: ShopView = self.view # type: ignore
 
         if interaction.user.id != view_parent.original_author_id:
@@ -174,16 +187,13 @@ class CancelPurchaseButton(discord.ui.Button['ShopView']): # Zmieniono typ widok
             return
 
         shop_embed = await view_parent.cog._build_shop_embed(view_parent.original_context)
-        # Tworzymy nowy ShopView, aby zresetować stan (np. wybór w select)
         new_shop_view = ShopView(view_parent.original_context, view_parent.bot, view_parent.cog)
 
-        # Edytujemy wiadomość, aby wrócić do głównego widoku sklepu
-        if interaction.message: # Upewniamy się, że wiadomość istnieje
+        if interaction.message:
             await interaction.message.edit(embed=shop_embed, view=new_shop_view)
-            new_shop_view.message = interaction.message # Aktualizujemy referencję do wiadomości w nowym widoku
-        else: # Jeśli nie ma wiadomości do edycji (np. interakcja była deferred i nie było followup)
+            new_shop_view.message = interaction.message
+        else:
             await interaction.response.send_message(embed=shop_embed, view=new_shop_view)
-            # new_shop_view.message = await interaction.original_response() # Jeśli to była nowa odpowiedź
 
 
 class ShopPurchaseView(discord.ui.View):
@@ -199,14 +209,13 @@ class ShopPurchaseView(discord.ui.View):
         self.item_data = item_data
         self.message = None
 
-        # Przyciski zakupu w zależności od dostępnych walut
         can_buy_with_dukaty = item_data.get("koszt_dukatow") is not None
         can_buy_with_krysztaly = item_data.get("koszt_krysztalow") is not None
 
         if can_buy_with_dukaty:
             self.add_item(PurchaseConfirmationButton(item_id, item_data, "dukaty", label=f"Kup za Dukaty ({item_data['koszt_dukatow']}✨)", style=discord.ButtonStyle.green, row=0))
         if can_buy_with_krysztaly:
-            self.add_item(PurchaseConfirmationButton(item_id, item_data, "krysztaly", label=f"Kup za Kryształy ({item_data['koszt_krysztalow']}{config.SYMBOL_WALUTY_PREMIUM})", style=discord.ButtonStyle.blurple, row=0 if not can_buy_with_dukaty else 1 )) # Inny rząd jeśli oba są dostępne
+            self.add_item(PurchaseConfirmationButton(item_id, item_data, "krysztaly", label=f"Kup za Kryształy ({item_data['koszt_krysztalow']}{config.SYMBOL_WALUTY_PREMIUM})", style=discord.ButtonStyle.blurple, row=0 if not can_buy_with_dukaty else 1 ))
 
         self.add_item(CancelPurchaseButton(label="❌ Anuluj", style=discord.ButtonStyle.red, row=2 if (can_buy_with_dukaty and can_buy_with_krysztaly) else (1 if (can_buy_with_dukaty or can_buy_with_krysztaly) else 0) ))
 
@@ -303,9 +312,8 @@ class ShopItemSelect(discord.ui.Select['ShopView']):
                     rola_obj = interaction.guild.get_role(int(item_data["id_roli_do_nadania"]))
                     if rola_obj:
                         opis_przedmiotu_embed += f"**Rola:** {rola_obj.mention}\n"
-                except: pass # Ignorujemy błąd, jeśli rola nie istnieje
+                except: pass
 
-        # Zmieniono na self.cog.bot.formatuj_czas
         opis_przedmiotu_embed += (f"**Czas trwania:** {self.cog.bot.formatuj_czas(item_data['czas_trwania_sekundy'], precyzyjnie=True)}" if 'czas_trwania_sekundy' in item_data and item_data['czas_trwania_sekundy'] is not None else "**Efekt:** Natychmiastowy / Jednorazowy")
 
 
@@ -318,11 +326,10 @@ class ShopItemSelect(discord.ui.Select['ShopView']):
         if self.original_context.guild and self.original_context.guild.icon:
              embed.set_thumbnail(url=self.original_context.guild.icon.url)
 
-        # Używamy ShopPurchaseView do potwierdzenia
         purchase_view = ShopPurchaseView(self.original_context, self.bot, self.cog, selected_item_id, item_data)
 
         await interaction.response.edit_message(embed=embed, view=purchase_view)
-        if interaction.message: # Przekazujemy wiadomość do nowego widoku
+        if interaction.message:
             purchase_view.message = interaction.message
 
 
@@ -332,7 +339,7 @@ class ShopView(discord.ui.View):
     def __init__(self, context: Context, bot: 'BotDiscord', cog: 'Waluta', timeout: float = 180.0):
         super().__init__(timeout=timeout)
         self.original_context = context
-        self.original_author_id = context.author.id # Dodajemy ID autora
+        self.original_author_id = context.author.id
         self.bot = bot
         self.cog = cog
         self.message = None
@@ -362,8 +369,6 @@ class Waluta(commands.Cog, name="waluta"):
 
     def __init__(self, bot: 'BotDiscord'):
         self.bot = bot
-
-    # Usunięto zduplikowaną metodę formatuj_czas
 
     async def _create_currency_embed(self, context: Context, title: str, description: str = "", color: discord.Color = config.KOLOR_WALUTY_GLOWNY) -> discord.Embed:
         embed = discord.Embed(title=title, description=description, color=color, timestamp=datetime.now(UTC))
@@ -413,12 +418,51 @@ class Waluta(commands.Cog, name="waluta"):
             if context.author.display_avatar:
                 embed.set_thumbnail(url=context.author.display_avatar.url)
         else:
-            # Zmieniono na self.bot.formatuj_czas
             pozostaly_czas_str = self.bot.formatuj_czas(odpowiedz_lub_czas, precyzyjnie=True) # type: ignore
             embed = await self._create_currency_embed(
                 context,
                 title="⏳ Jeszcze Nie Teraz, Kronikarzu!",
                 description=f"{context.author.mention}, możesz odebrać kolejną dzienną porcję Gwiezdnych Dukatów za: **{pozostaly_czas_str}**.",
+                color=config.KOLOR_COOLDOWN_WALUTA
+            )
+        await context.send(embed=embed)
+
+    @commands.hybrid_command(
+        name="pracuj",
+        aliases=["work"],
+        description="Wykonaj pracę i zarób Gwiezdne Dukaty!"
+    )
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def pracuj(self, context: Context):
+        if not context.guild:
+            await context.send("Tej komendy można używać tylko w granicach Kronik Elary.", ephemeral=True)
+            return
+        if self.bot.baza_danych is None:
+            await context.send("Skarbiec Kronik jest chwilowo niedostępny. Spróbuj ponownie później.", ephemeral=True)
+            return
+
+        user_id = context.author.id
+        server_id = context.guild.id
+
+        sukces, wiadomosc_lub_czas, zarobione_dukaty, nowe_saldo_dukatow = await self.bot.baza_danych.wykonaj_prace(
+            user_id, server_id, config.ILOSC_DUKATOW_ZA_PRACE_MIN, config.ILOSC_DUKATOW_ZA_PRACE_MAX, config.COOLDOWN_PRACA_SEKUNDY
+        )
+
+        if sukces:
+            embed = await self._create_currency_embed(
+                context,
+                title="🛠️ Praca Wykonana!",
+                description=f"{context.author.mention}, {wiadomosc_lub_czas}\nTwoje aktualne saldo: **{nowe_saldo_dukatow}** ✨ Gwiezdnych Dukatów.",
+                color=config.KOLOR_BOT_SUKCES
+            )
+            if context.author.display_avatar:
+                embed.set_thumbnail(url=context.author.display_avatar.url)
+        else:
+            pozostaly_czas_str = self.bot.formatuj_czas(wiadomosc_lub_czas, precyzyjnie=True) # type: ignore
+            embed = await self._create_currency_embed(
+                context,
+                title="⏳ Chwila Odpoczynku, Kronikarzu!",
+                description=f"{context.author.mention}, musisz odpocząć po pracy. Następne zlecenie będzie dostępne za: **{pozostaly_czas_str}**.",
                 color=config.KOLOR_COOLDOWN_WALUTA
             )
         await context.send(embed=embed)

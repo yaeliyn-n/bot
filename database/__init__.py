@@ -11,9 +11,13 @@ import time
 from datetime import datetime, date as date_obj, UTC, timedelta
 import json
 import typing
+import random
 
 if typing.TYPE_CHECKING:
     import discord
+    from bot import BotDiscord # Zakładamy, że bot.py jest w głównym katalogu
+    import config as bot_config
+
 
 class ZarzadcaBazyDanych:
     def __init__(self, *, connection: aiosqlite.Connection) -> None:
@@ -21,16 +25,11 @@ class ZarzadcaBazyDanych:
 
     # --- Metody ostrzeżeń ---
     async def dodaj_ostrzezenie( self, user_id: int, server_id: int, moderator_id: int, reason: str ) -> int:
-        # Usunięto logikę ręcznego ustalania warn_id. SQLite zajmie się tym dzięki AUTOINCREMENT.
-        # Kolumna `id` w tabeli `warns` jest zdefiniowana jako AUTOINCREMENT,
-        # więc nie musimy jej podawać w zapytaniu INSERT.
         cursor = await self.connection.execute(
             "INSERT INTO warns(user_id, server_id, moderator_id, reason) VALUES (?, ?, ?, ?)",
             (str(user_id), str(server_id), str(moderator_id), reason,),
         )
         await self.connection.commit()
-        # Zwracamy ID ostatnio wstawionego wiersza, które zostało wygenerowane przez AUTOINCREMENT.
-        # Typowanie cursor.lastrowid jako int, ponieważ tak jest oczekiwane przez sygnaturę funkcji.
         return typing.cast(int, cursor.lastrowid)
 
     async def usun_ostrzezenie(self, warn_id: int, user_id: int, server_id: int) -> int:
@@ -133,6 +132,12 @@ class ZarzadcaBazyDanych:
         await self.connection.execute(query, tuple(params))
         await self.connection.commit()
 
+        # Dodajemy aktualizację miesięcznego XP, jeśli xp_dodane > 0
+        if xp_dodane > 0:
+            teraz = datetime.now(UTC)
+            await self.inkrementuj_miesieczne_xp(str(user_id), str(server_id), teraz.year, teraz.month, xp_dodane)
+
+
     async def zresetuj_streak_uzytkownika(self, user_id: int, server_id: int) -> None:
         await self.connection.execute("UPDATE doswiadczenie_uzytkownika SET aktualny_streak_dni = 0, ostatni_dzien_aktywnosci_streak = NULL WHERE user_id = ? AND server_id = ?", (str(user_id), str(server_id)))
         await self.connection.commit()
@@ -140,7 +145,7 @@ class ZarzadcaBazyDanych:
     # --- Metody Portfela Kronikarza ---
     async def pobierz_portfel(self, user_id: int, server_id: int) -> tuple | None:
         async with self.connection.execute(
-            "SELECT user_id, server_id, gwiezdne_dukaty, gwiezdne_krysztaly, ostatnie_odebranie_daily_ts FROM portfel_kronikarza WHERE user_id = ? AND server_id = ?",
+            "SELECT user_id, server_id, gwiezdne_dukaty, gwiezdne_krysztaly, ostatnie_odebranie_daily_ts, ostatnia_praca_timestamp FROM portfel_kronikarza WHERE user_id = ? AND server_id = ?",
             (str(user_id), str(server_id))
         ) as cursor:
             return await cursor.fetchone()
@@ -150,42 +155,45 @@ class ZarzadcaBazyDanych:
         if portfel:
             return portfel
         await self.connection.execute(
-            "INSERT INTO portfel_kronikarza (user_id, server_id, gwiezdne_dukaty, gwiezdne_krysztaly, ostatnie_odebranie_daily_ts) VALUES (?, ?, 0, 0, 0)",
+            "INSERT INTO portfel_kronikarza (user_id, server_id, gwiezdne_dukaty, gwiezdne_krysztaly, ostatnie_odebranie_daily_ts, ostatnia_praca_timestamp) VALUES (?, ?, 0, 0, 0, 0)",
             (str(user_id), str(server_id))
         )
         await self.connection.commit()
-        return (str(user_id), str(server_id), 0, 0, 0)
+        return (str(user_id), str(server_id), 0, 0, 0, 0)
 
-    async def aktualizuj_portfel(self, user_id: int, server_id: int, ilosc_dukatow_do_dodania: int = 0, ilosc_krysztalow_do_dodania: int = 0, nowy_timestamp_daily: int | None = None) -> tuple[int, int]:
-        _, _, obecne_dukaty, obecne_krysztaly, obecny_timestamp_daily = await self.pobierz_lub_stworz_portfel(user_id, server_id)
+    async def aktualizuj_portfel(self, user_id: int, server_id: int, ilosc_dukatow_do_dodania: int = 0, ilosc_krysztalow_do_dodania: int = 0, nowy_timestamp_daily: int | None = None, nowy_timestamp_praca: int | None = None) -> tuple[int, int]:
+        _, _, obecne_dukaty, obecne_krysztaly, obecny_timestamp_daily, obecny_timestamp_praca = await self.pobierz_lub_stworz_portfel(user_id, server_id)
 
         nowe_saldo_dukatow = obecne_dukaty + ilosc_dukatow_do_dodania
         nowe_saldo_krysztalow = obecne_krysztaly + ilosc_krysztalow_do_dodania
         timestamp_daily_do_zapisu = nowy_timestamp_daily if nowy_timestamp_daily is not None else obecny_timestamp_daily
+        timestamp_praca_do_zapisu = nowy_timestamp_praca if nowy_timestamp_praca is not None else obecny_timestamp_praca
+
 
         await self.connection.execute(
-            "UPDATE portfel_kronikarza SET gwiezdne_dukaty = ?, gwiezdne_krysztaly = ?, ostatnie_odebranie_daily_ts = ? WHERE user_id = ? AND server_id = ?",
-            (nowe_saldo_dukatow, nowe_saldo_krysztalow, timestamp_daily_do_zapisu, str(user_id), str(server_id))
+            "UPDATE portfel_kronikarza SET gwiezdne_dukaty = ?, gwiezdne_krysztaly = ?, ostatnie_odebranie_daily_ts = ?, ostatnia_praca_timestamp = ? WHERE user_id = ? AND server_id = ?",
+            (nowe_saldo_dukatow, nowe_saldo_krysztalow, timestamp_daily_do_zapisu, timestamp_praca_do_zapisu, str(user_id), str(server_id))
         )
         await self.connection.commit()
         return nowe_saldo_dukatow, nowe_saldo_krysztalow
 
     async def ustaw_saldo_portfela(self, user_id: int, server_id: int, nowe_saldo_dukatow: int | None = None, nowe_saldo_krysztalow: int | None = None) -> tuple[int, int]:
-        _, _, obecne_dukaty, obecne_krysztaly, ostatnie_daily_ts_do_zachowania = await self.pobierz_lub_stworz_portfel(user_id, server_id)
+        _, _, obecne_dukaty, obecne_krysztaly, ostatnie_daily_ts_do_zachowania, ostatnia_praca_ts_do_zachowania = await self.pobierz_lub_stworz_portfel(user_id, server_id)
 
         dukaty_do_zapisu = nowe_saldo_dukatow if nowe_saldo_dukatow is not None else obecne_dukaty
         krysztaly_do_zapisu = nowe_saldo_krysztalow if nowe_saldo_krysztalow is not None else obecne_krysztaly
 
         await self.connection.execute(
             """
-            INSERT INTO portfel_kronikarza (user_id, server_id, gwiezdne_dukaty, gwiezdne_krysztaly, ostatnie_odebranie_daily_ts)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO portfel_kronikarza (user_id, server_id, gwiezdne_dukaty, gwiezdne_krysztaly, ostatnie_odebranie_daily_ts, ostatnia_praca_timestamp)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(user_id, server_id) DO UPDATE SET
             gwiezdne_dukaty = excluded.gwiezdne_dukaty,
             gwiezdne_krysztaly = excluded.gwiezdne_krysztaly,
-            ostatnie_odebranie_daily_ts = portfel_kronikarza.ostatnie_odebranie_daily_ts
+            ostatnie_odebranie_daily_ts = portfel_kronikarza.ostatnie_odebranie_daily_ts,
+            ostatnia_praca_timestamp = portfel_kronikarza.ostatnia_praca_timestamp
             """,
-            (str(user_id), str(server_id), dukaty_do_zapisu, krysztaly_do_zapisu, ostatnie_daily_ts_do_zachowania)
+            (str(user_id), str(server_id), dukaty_do_zapisu, krysztaly_do_zapisu, ostatnie_daily_ts_do_zachowania, ostatnia_praca_ts_do_zachowania)
         )
         await self.connection.commit()
         return dukaty_do_zapisu, krysztaly_do_zapisu
@@ -202,6 +210,20 @@ class ZarzadcaBazyDanych:
         else:
             pozostaly_czas = cooldown_sekundy - (teraz_ts - ostatnie_odebranie_ts)
             return False, pozostaly_czas, aktualne_dukaty
+
+    async def wykonaj_prace(self, user_id: int, server_id: int, min_dukaty: int, max_dukaty: int, cooldown_sekundy: int) -> tuple[bool, typing.Union[str, int], int, int]:
+        portfel_dane = await self.pobierz_lub_stworz_portfel(user_id, server_id)
+        aktualne_dukaty = portfel_dane[2]
+        ostatnia_praca_ts = portfel_dane[5]
+        teraz_ts = int(time.time())
+
+        if ostatnia_praca_ts == 0 or (teraz_ts - ostatnia_praca_ts >= cooldown_sekundy):
+            zarobione_dukaty = random.randint(min_dukaty, max_dukaty)
+            nowe_saldo_dukatow, _ = await self.aktualizuj_portfel(user_id, server_id, ilosc_dukatow_do_dodania=zarobione_dukaty, nowy_timestamp_praca=teraz_ts)
+            return True, f"Ciężko pracowałeś i zarobiłeś **{zarobione_dukaty}** ✨ Gwiezdnych Dukatów!", zarobione_dukaty, nowe_saldo_dukatow
+        else:
+            pozostaly_czas = cooldown_sekundy - (teraz_ts - ostatnia_praca_ts)
+            return False, pozostaly_czas, 0, aktualne_dukaty
 
     # --- Metody Transakcji Premium ---
     async def log_transakcje_premium(self, user_id: str, server_id: str, id_pakietu: str, ilosc_krysztalow: int, cena_pln: float | None, id_platnosci_zewnetrznej: str | None, status: str) -> int:
@@ -451,7 +473,7 @@ class ZarzadcaBazyDanych:
         async with self.connection.execute("SELECT SUM(liczba_wyslanych_wiadomosci) FROM doswiadczenie_uzytkownika WHERE server_id = ?", (str(server_id),)) as cursor:
             result = await cursor.fetchone(); return result[0] if result and result[0] is not None else 0
 
-    # --- NOWE METODY DLA SYSTEMU MISJI ---
+    # --- Metody dla Systemu Misji ---
     async def pobierz_lub_stworz_postep_misji(self, user_id: str, server_id: str, id_misji: str, typ_warunku: str, ostatni_reset_ts_dla_misji: int) -> tuple:
         query_select = "SELECT * FROM postep_misji_uzytkownika WHERE user_id = ? AND server_id = ? AND id_misji = ? AND typ_warunku = ?"
         async with self.connection.execute(query_select, (user_id, server_id, id_misji, typ_warunku)) as cursor:
@@ -505,3 +527,95 @@ class ZarzadcaBazyDanych:
         query = "SELECT id_misji, data_ukonczenia_timestamp FROM ukonczone_misje_uzytkownika WHERE user_id = ? AND server_id = ? ORDER BY data_ukonczenia_timestamp DESC"
         async with self.connection.execute(query, (user_id, server_id)) as cursor:
             return await cursor.fetchall() # type: ignore
+
+    # --- Metody dla Statystyk Osiągnięć ---
+    async def inkrementuj_liczbe_wiadomosci_na_kanale(self, user_id: str, server_id: str, kanal_id: str, ilosc: int = 1) -> int:
+        await self.connection.execute(
+            """
+            INSERT INTO statystyki_aktywnosci_na_kanalach (user_id, server_id, kanal_id, liczba_wiadomosci)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(user_id, server_id, kanal_id) DO UPDATE SET
+            liczba_wiadomosci = liczba_wiadomosci + excluded.liczba_wiadomosci;
+            """, (user_id, server_id, kanal_id, ilosc)
+        )
+        await self.connection.commit()
+        async with self.connection.execute("SELECT liczba_wiadomosci FROM statystyki_aktywnosci_na_kanalach WHERE user_id = ? AND server_id = ? AND kanal_id = ?", (user_id, server_id, kanal_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
+
+    async def pobierz_liczbe_wiadomosci_na_kanale(self, user_id: str, server_id: str, kanal_id: str) -> int:
+        async with self.connection.execute("SELECT liczba_wiadomosci FROM statystyki_aktywnosci_na_kanalach WHERE user_id = ? AND server_id = ? AND kanal_id = ?", (user_id, server_id, kanal_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
+
+    async def inkrementuj_liczbe_wygranych_konkursow(self, user_id: str, server_id: str, ilosc: int = 1) -> int:
+        await self.connection.execute(
+            """
+            INSERT INTO statystyki_konkursow_uzytkownika (user_id, server_id, liczba_wygranych_konkursow)
+            VALUES (?, ?, ?)
+            ON CONFLICT(user_id, server_id) DO UPDATE SET
+            liczba_wygranych_konkursow = liczba_wygranych_konkursow + excluded.liczba_wygranych_konkursow;
+            """, (user_id, server_id, ilosc)
+        )
+        await self.connection.commit()
+        async with self.connection.execute("SELECT liczba_wygranych_konkursow FROM statystyki_konkursow_uzytkownika WHERE user_id = ? AND server_id = ?", (user_id, server_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
+
+    async def pobierz_liczbe_wygranych_konkursow(self, user_id: str, server_id: str) -> int:
+        async with self.connection.execute("SELECT liczba_wygranych_konkursow FROM statystyki_konkursow_uzytkownika WHERE user_id = ? AND server_id = ?", (user_id, server_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
+
+    async def inkrementuj_uzycia_komend_kategorii(self, user_id: str, server_id: str, nazwa_kategorii: str, ilosc: int = 1) -> int:
+        await self.connection.execute(
+            """
+            INSERT INTO statystyki_uzycia_komend_kategorii (user_id, server_id, nazwa_kategorii, liczba_uzyc)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(user_id, server_id, nazwa_kategorii) DO UPDATE SET
+            liczba_uzyc = liczba_uzyc + excluded.liczba_uzyc;
+            """, (user_id, server_id, nazwa_kategorii, ilosc)
+        )
+        await self.connection.commit()
+        async with self.connection.execute("SELECT liczba_uzyc FROM statystyki_uzycia_komend_kategorii WHERE user_id = ? AND server_id = ? AND nazwa_kategorii = ?", (user_id, server_id, nazwa_kategorii)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
+
+    async def pobierz_uzycia_komend_kategorii(self, user_id: str, server_id: str, nazwa_kategorii: str) -> int:
+        async with self.connection.execute("SELECT liczba_uzyc FROM statystyki_uzycia_komend_kategorii WHERE user_id = ? AND server_id = ? AND nazwa_kategorii = ?", (user_id, server_id, nazwa_kategorii)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
+
+    # --- Metody dla Rankingów Sezonowych (Miesięcznych) ---
+    async def inkrementuj_miesieczne_xp(self, user_id: str, server_id: str, rok: int, miesiac: int, ilosc_xp: int) -> int:
+        """Inkrementuje XP użytkownika w danym miesiącu i zwraca nową sumę miesięcznego XP."""
+        await self.connection.execute(
+            """
+            INSERT INTO miesieczne_xp (user_id, server_id, rok, miesiac, xp_miesieczne)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(user_id, server_id, rok, miesiac) DO UPDATE SET
+            xp_miesieczne = xp_miesieczne + excluded.xp_miesieczne;
+            """, (user_id, server_id, rok, miesiac, ilosc_xp)
+        )
+        await self.connection.commit()
+        async with self.connection.execute("SELECT xp_miesieczne FROM miesieczne_xp WHERE user_id = ? AND server_id = ? AND rok = ? AND miesiac = ?", (user_id, server_id, rok, miesiac)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
+
+    async def pobierz_ranking_miesiecznego_xp(self, server_id: str, rok: int, miesiac: int, limit: int = 10) -> list[tuple[str, int]]:
+        """Pobiera ranking użytkowników na podstawie XP zdobytego w danym miesiącu."""
+        query = """
+            SELECT user_id, xp_miesieczne
+            FROM miesieczne_xp
+            WHERE server_id = ? AND rok = ? AND miesiac = ?
+            ORDER BY xp_miesieczne DESC
+            LIMIT ?;
+        """
+        async with self.connection.execute(query, (server_id, rok, miesiac, limit)) as cursor:
+            return await cursor.fetchall() # type: ignore
+
+    async def pobierz_miesieczne_xp_uzytkownika(self, user_id: str, server_id: str, rok: int, miesiac: int) -> int:
+        """Pobiera XP zdobyte przez użytkownika w danym miesiącu."""
+        async with self.connection.execute("SELECT xp_miesieczne FROM miesieczne_xp WHERE user_id = ? AND server_id = ? AND rok = ? AND miesiac = ?", (user_id, server_id, rok, miesiac)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result else 0
