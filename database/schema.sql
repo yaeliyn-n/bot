@@ -186,3 +186,30 @@ CREATE TABLE IF NOT EXISTS `warns` (
         PRIMARY KEY (`user_id`, `server_id`, `nazwa_kategorii`)
     );
     CREATE INDEX IF NOT EXISTS idx_stat_kom_kat_user_server_kat ON statystyki_uzycia_komend_kategorii (user_id, server_id, nazwa_kategorii);
+
+    -- NOWA TABELA DLA PRZEDMIOTÓW SKLEPU (definicje)
+    CREATE TABLE IF NOT EXISTS `shop_items` (
+        `id` TEXT PRIMARY KEY NOT NULL, -- Unikalny ID przedmiotu (np. "xp_boost_1h")
+        `name` TEXT NOT NULL,
+        `description` TEXT NOT NULL,
+        `cost_dukaty` INTEGER,
+        `cost_krysztaly` INTEGER,
+        `emoji` TEXT,
+        `item_type` TEXT NOT NULL, -- np. "xp_mnoznik", "timed_role", "cosmetic"
+        `bonus_value` REAL, -- np. 0.25 dla mnożnika XP, 0 dla kosmetycznych
+        `duration_seconds` INTEGER, -- Czas trwania bonusu w sekundach (NULL dla stałych)
+        `role_id_to_grant` TEXT, -- ID roli do nadania (dla timed_role)
+        `stock` INTEGER DEFAULT -1 -- Ilość w magazynie (-1 dla nieskończonej)
+    );
+
+    -- NOWA TABELA DLA KONFIGURACJI SERWERA
+    CREATE TABLE IF NOT EXISTS `server_config` (
+        `server_id` TEXT PRIMARY KEY NOT NULL,
+        `xp_blocked_globally` INTEGER DEFAULT 0,
+        `xp_multiplier_event` REAL DEFAULT 1.0,
+        `xp_event_name` TEXT DEFAULT NULL,
+        `welcome_channel_id` TEXT DEFAULT NULL,
+        `default_role_id` TEXT DEFAULT NULL,
+        `live_ranking_channel_id` TEXT DEFAULT NULL,
+        `live_ranking_message_id` TEXT DEFAULT NULL
+    );

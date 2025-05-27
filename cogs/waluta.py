@@ -12,6 +12,7 @@ import config
 
 if typing.TYPE_CHECKING:
     from bot import BotDiscord
+    from database import ZarzadcaBazyDanych # Import ZarzadcaBazyDanych
 
 class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
     def __init__(self, item_id: str, item_data: dict, currency_to_use: str, **kwargs):
@@ -41,8 +42,8 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
         # server_id jest teraz pewne, bo interaction.guild istnieje
         server_id = interaction.guild_id 
         
-        koszt_dukatow = self.item_data.get("koszt_dukatow")
-        koszt_krysztalow = self.item_data.get("koszt_krysztalow")
+        koszt_dukatow = self.item_data.get("cost_dukaty") # Zmieniono na 'cost_dukaty'
+        koszt_krysztalow = self.item_data.get("cost_krysztaly") # Zmieniono na 'cost_krysztaly'
 
         koszt = 0
         waluta_symbol = ""
@@ -67,7 +68,7 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
             embed_error = await view.cog._create_currency_embed(
                 view.original_context,
                 title=f"📉 Brak Wystarczających Środków ({nazwa_waluty})",
-                description=f"Nie udało się zakupić **{self.item_data['nazwa']}**.\nPotrzebujesz: **{koszt}** {waluta_symbol}, posiadasz: **{posiadana_waluta}** {waluta_symbol}.",
+                description=f"Nie udało się zakupić **{self.item_data['name']}**.\nPotrzebujesz: **{koszt}** {waluta_symbol}, posiadasz: **{posiadana_waluta}** {waluta_symbol}.",
                 color=config.KOLOR_BOT_BLAD
             )
             await interaction.response.edit_message(embed=embed_error, view=None)
@@ -81,19 +82,19 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
 
         czas_zakupu_ts = int(time.time())
         czas_wygasniecia_ts = None
-        if "czas_trwania_sekundy" in self.item_data and self.item_data["czas_trwania_sekundy"] is not None:
-             czas_wygasniecia_ts = czas_zakupu_ts + self.item_data["czas_trwania_sekundy"]
+        if "duration_seconds" in self.item_data and self.item_data["duration_seconds"] is not None: # Zmieniono na 'duration_seconds'
+             czas_wygasniecia_ts = czas_zakupu_ts + self.item_data["duration_seconds"]
 
-        typ_bonusu_przedmiotu = self.item_data.get("typ_bonusu", "nieznany_typ_bonusu")
-        wartosc_bonusu_przedmiotu = self.item_data.get("wartosc_bonusu", self.item_data.get("wartosc_mnoznika_bonusowego", 0.0))
+        typ_bonusu_przedmiotu = self.item_data.get("item_type", "nieznany_typ_bonusu") # Zmieniono na 'item_type'
+        wartosc_bonusu_przedmiotu = self.item_data.get("bonus_value", 0.0) # Zmieniono na 'bonus_value'
 
 
         wiadomosc_sukcesu_dodatkowa = ""
 
         if typ_bonusu_przedmiotu == "timed_role":
-            rola_id_str = self.item_data.get("id_roli_do_nadania")
+            rola_id_str = self.item_data.get("role_id_to_grant") # Zmieniono na 'role_id_to_grant'
             if not rola_id_str or not interaction.guild: # Sprawdzenie interaction.guild
-                view.bot.logger.error(f"Brak id_roli_do_nadania lub guild w item_data dla timed_role: {self.item_id}")
+                view.bot.logger.error(f"Brak role_id_to_grant lub guild w item_data dla timed_role: {self.item_id}")
                 await interaction.response.edit_message(content="Błąd konfiguracji przedmiotu (brak ID roli). Skontaktuj się z administratorem.", embed=None, view=None)
                 return
             try:
@@ -105,18 +106,21 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
                     return
 
                 # interaction.user jest już typu discord.Member dzięki wcześniejszemu sprawdzeniu
-                await interaction.user.add_roles(rola_obj, reason=f"Zakup przedmiotu w sklepie: {self.item_data['nazwa']}")
+                await interaction.user.add_roles(rola_obj, reason=f"Zakup przedmiotu w sklepie: {self.item_data['name']}")
+                
+                # Upewniamy się, że czas wygaśnięcia jest poprawny dla ról czasowych
+                final_czas_wygasniecia_ts = czas_wygasniecia_ts if czas_wygasniecia_ts is not None else (czas_zakupu_ts + (self.item_data["duration_seconds"] or 0))
 
-                if czas_wygasniecia_ts:
+                if final_czas_wygasniecia_ts > czas_zakupu_ts: # Jeśli jest to rola czasowa
                     await view.bot.baza_danych.dodaj_aktywna_role_czasowa(
                         str(user_id), str(server_id), str(rola_id_int),
-                        czas_zakupu_ts, czas_wygasniecia_ts, self.item_id
+                        czas_zakupu_ts, final_czas_wygasniecia_ts, self.item_id
                     )
                     wiadomosc_sukcesu_dodatkowa = f"\n🛡️ Otrzymałeś/aś rolę **{rola_obj.name}**!"
-                else:
+                else: # Jeśli rola jest na stałe (duration_seconds = 0 lub None)
                     wiadomosc_sukcesu_dodatkowa = f"\n🛡️ Otrzymałeś/aś na stałe rolę **{rola_obj.name}**!"
 
-                view.bot.logger.info(f"Przyznano rolę '{rola_obj.name}' użytkownikowi {interaction.user.display_name} po zakupie '{self.item_data['nazwa']}'.")
+                view.bot.logger.info(f"Przyznano rolę '{rola_obj.name}' użytkownikowi {interaction.user.display_name} po zakupie '{self.item_data['name']}'.")
 
             except ValueError:
                 view.bot.logger.error(f"Nieprawidłowe ID roli '{rola_id_str}' w konfiguracji przedmiotu {self.item_id}.")
@@ -130,7 +134,7 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
                 view.bot.logger.error(f"Nieoczekiwany błąd podczas nadawania roli czasowej {self.item_id}: {e}", exc_info=True)
                 await interaction.response.edit_message(content="Wystąpił nieoczekiwany błąd przy nadawaniu roli. Skontaktuj się z administratorem.", embed=None, view=None)
                 return
-        else:
+        else: # Dla innych typów bonusów niż timed_role
             await view.bot.baza_danych.dodaj_przedmiot_uzytkownika(
                 str(user_id), str(server_id), self.item_id,
                 czas_zakupu_ts, czas_wygasniecia_ts,
@@ -153,14 +157,14 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
             except Exception as e_mission:
                 view.bot.logger.error(f"Błąd podczas aktualizacji misji po zakupie przedmiotu {self.item_id} przez {interaction.user.display_name}: {e_mission}", exc_info=True)
 
-
-        czas_trwania_str = view.cog.bot.formatuj_czas(self.item_data.get("czas_trwania_sekundy", 0), precyzyjnie=True)
+        # Używamy 'duration_seconds' z item_data
+        czas_trwania_str = view.cog.bot.formatuj_czas(self.item_data.get("duration_seconds", 0), precyzyjnie=True)
         emoji_przedmiotu = self.item_data.get("emoji", "🎉")
         nazwa_waluty_zakupu = "Gwiezdnych Dukatów" if self.currency_to_use == "dukaty" else config.NAZWA_WALUTY_PREMIUM
 
-        opis_embed_sukces = (f"Pomyślnie zakupiłeś/aś **{self.item_data['nazwa']}** za {koszt} {waluta_symbol} {nazwa_waluty_zakupu}!"
+        opis_embed_sukces = (f"Pomyślnie zakupiłeś/aś **{self.item_data['name']}** za {koszt} {waluta_symbol} {nazwa_waluty_zakupu}!"
                              f"{wiadomosc_sukcesu_dodatkowa}\n" +
-                             (f"Artefakt będzie aktywny przez **{czas_trwania_str}**." if self.item_data.get("czas_trwania_sekundy") and typ_bonusu_przedmiotu != "timed_role" else
+                             (f"Artefakt będzie aktywny przez **{czas_trwania_str}**." if self.item_data.get("duration_seconds") and typ_bonusu_przedmiotu != "timed_role" else
                               (f"Rola będzie aktywna przez **{czas_trwania_str}**." if typ_bonusu_przedmiotu == "timed_role" and czas_wygasniecia_ts else
                                ("Artefakt został dodany do Twojego ekwipunku." if typ_bonusu_przedmiotu != "timed_role" else ""))))
 
@@ -174,7 +178,7 @@ class PurchaseConfirmationButton(discord.ui.Button['ShopPurchaseView']):
         if interaction.user.display_avatar:
             embed_success.set_thumbnail(url=interaction.user.display_avatar.url)
         await interaction.response.edit_message(embed=embed_success, view=None)
-        view.bot.logger.info(f"Użytkownik {interaction.user.display_name} zakupił '{self.item_data['nazwa']}' na serwerze {interaction.guild.name if interaction.guild else 'DM'} za {koszt} {waluta_symbol} ({self.currency_to_use}) poprzez menu.")
+        view.bot.logger.info(f"Użytkownik {interaction.user.display_name} zakupił '{self.item_data['name']}' na serwerze {interaction.guild.name if interaction.guild else 'DM'} za {koszt} {waluta_symbol} ({self.currency_to_use}) poprzez menu.")
 
 
 class CancelPurchaseButton(discord.ui.Button['ShopView']):
@@ -209,13 +213,13 @@ class ShopPurchaseView(discord.ui.View):
         self.item_data = item_data
         self.message = None
 
-        can_buy_with_dukaty = item_data.get("koszt_dukatow") is not None
-        can_buy_with_krysztaly = item_data.get("koszt_krysztalow") is not None
+        can_buy_with_dukaty = item_data.get("cost_dukaty") is not None
+        can_buy_with_krysztaly = item_data.get("cost_krysztaly") is not None
 
         if can_buy_with_dukaty:
-            self.add_item(PurchaseConfirmationButton(item_id, item_data, "dukaty", label=f"Kup za Dukaty ({item_data['koszt_dukatow']}✨)", style=discord.ButtonStyle.green, row=0))
+            self.add_item(PurchaseConfirmationButton(item_id, item_data, "dukaty", label=f"Kup za Dukaty ({item_data['cost_dukaty']}✨)", style=discord.ButtonStyle.green, row=0))
         if can_buy_with_krysztaly:
-            self.add_item(PurchaseConfirmationButton(item_id, item_data, "krysztaly", label=f"Kup za Kryształy ({item_data['koszt_krysztalow']}{config.SYMBOL_WALUTY_PREMIUM})", style=discord.ButtonStyle.blurple, row=0 if not can_buy_with_dukaty else 1 ))
+            self.add_item(PurchaseConfirmationButton(item_id, item_data, "krysztaly", label=f"Kup za Kryształy ({item_data['cost_krysztaly']}{config.SYMBOL_WALUTY_PREMIUM})", style=discord.ButtonStyle.blurple, row=0 if not can_buy_with_dukaty else 1 ))
 
         self.add_item(CancelPurchaseButton(label="❌ Anuluj", style=discord.ButtonStyle.red, row=2 if (can_buy_with_dukaty and can_buy_with_krysztaly) else (1 if (can_buy_with_dukaty or can_buy_with_krysztaly) else 0) ))
 
@@ -238,37 +242,55 @@ class ShopPurchaseView(discord.ui.View):
 
 
 class ShopItemSelect(discord.ui.Select['ShopView']):
-    def __init__(self, context: Context, bot: 'BotDiscord', cog: 'Waluta'):
+    def __init__(self, context: Context, bot: 'BotDiscord', cog: 'Waluta', shop_items: list[dict]): # Dodano shop_items
         self.original_context = context
         self.bot = bot
         self.cog = cog
 
         options = []
-        if not config.PRZEDMIOTY_SKLEPU:
+        if not shop_items: # Zmieniono na shop_items
             options.append(discord.SelectOption(label="Skarbiec jest pusty!", value="_empty", emoji="💨"))
         else:
-            for item_id, item_data in config.PRZEDMIOTY_SKLEPU.items():
-                emoji = item_data.get("emoji", "🛍️")
+            for item_data in shop_items: # Iterujemy bezpośrednio po item_data
+                raw_emoji = item_data.get("emoji")
+                display_emoji = None
+                if raw_emoji:
+                    try:
+                        # Spróbuj sparsować jako niestandardowe emoji Discorda
+                        display_emoji = discord.PartialEmoji.from_str(raw_emoji)
+                        # Jeśli to string, ale nie custom emoji, to jest to zwykły unicode
+                        if not display_emoji.id and not display_emoji.name: # Sprawdź czy to na pewno custom emoji
+                            display_emoji = raw_emoji # Wróć do stringa jeśli to nie custom emoji
+                    except discord.InvalidArgument:
+                        # Jeśli nie można sparsować jako PartialEmoji, to jest to zwykły string
+                        display_emoji = raw_emoji
+                    except Exception as e:
+                        # W przypadku innych błędów parsowania, użyj domyślnego
+                        self.bot.logger.warning(f"Nieprawidłowy ciąg emoji '{raw_emoji}' dla przedmiotu {item_data['id']}: {e}. Używam domyślnego emoji.")
+                        display_emoji = "🛍️" # Domyślny fallback
+                else:
+                    display_emoji = "🛍️" # Domyślny, jeśli emoji nie jest podane
+
                 price_str_parts = []
-                if item_data.get("koszt_dukatow") is not None:
-                    price_str_parts.append(f"{item_data['koszt_dukatow']} ✨")
-                if item_data.get("koszt_krysztalow") is not None:
-                    price_str_parts.append(f"{item_data['koszt_krysztalow']} {config.SYMBOL_WALUTY_PREMIUM}")
+                if item_data.get("cost_dukaty") is not None: # Zmieniono na 'cost_dukaty'
+                    price_str_parts.append(f"{item_data['cost_dukaty']} ✨")
+                if item_data.get("cost_krysztaly") is not None: # Zmieniono na 'cost_krysztaly'
+                    price_str_parts.append(f"{item_data['cost_krysztaly']} {config.SYMBOL_WALUTY_PREMIUM}")
                 price_str = " lub ".join(price_str_parts) if price_str_parts else "Darmowy?"
 
                 options.append(discord.SelectOption(
-                    label=f"{item_data['nazwa']} ({price_str})",
-                    value=item_id,
-                    description=item_data['opis'][:100],
-                    emoji=emoji
+                    label=f"{item_data['name']} ({price_str})", # Zmieniono na 'name'
+                    value=item_data['id'], # Używamy 'id' przedmiotu
+                    description=item_data['description'][:100], # Zmieniono na 'description'
+                    emoji=display_emoji # Używamy przetworzonego emoji
                 ))
 
         super().__init__(
             placeholder="Wybierz artefakt do zbadania...",
             min_values=1,
             max_values=1,
-            options=options,
-            disabled=not config.PRZEDMIOTY_SKLEPU
+            options=options if len(options) > 1 else [options[0]], # Zapewnienie, że opcje nie są puste
+            disabled=not shop_items # Zmieniono na shop_items
         )
 
     async def callback(self, interaction: Interaction):
@@ -284,15 +306,16 @@ class ShopItemSelect(discord.ui.Select['ShopView']):
             await interaction.response.defer()
             return
 
-        item_data = config.PRZEDMIOTY_SKLEPU.get(selected_item_id)
+        # Pobierz przedmiot z listy, którą widok otrzymał
+        item_data = next((item for item in view.shop_items if item['id'] == selected_item_id), None)
         if not item_data:
             await interaction.response.edit_message(content="Wybrany artefakt zniknął z naszego skarbca!", embed=None, view=None)
             return
 
         emoji = item_data.get("emoji", "🛍️")
 
-        koszt_dukaty_str = f"{item_data['koszt_dukatow']} ✨ Gwiezdnych Dukatów" if item_data.get("koszt_dukatow") is not None else ""
-        koszt_krysztaly_str = f"{item_data['koszt_krysztalow']} {config.SYMBOL_WALUTY_PREMIUM} {config.NAZWA_WALUTY_PREMIUM}" if item_data.get("koszt_krysztalow") is not None else ""
+        koszt_dukaty_str = f"{item_data['cost_dukaty']} ✨ Gwiezdnych Dukatów" if item_data.get("cost_dukaty") is not None else ""
+        koszt_krysztaly_str = f"{item_data['cost_krysztaly']} {config.SYMBOL_WALUTY_PREMIUM} {config.NAZWA_WALUTY_PREMIUM}" if item_data.get("cost_krysztaly") is not None else ""
 
         koszt_opis = ""
         if koszt_dukaty_str and koszt_krysztaly_str:
@@ -304,22 +327,22 @@ class ShopItemSelect(discord.ui.Select['ShopView']):
         else:
             koszt_opis = "**Koszt:** Przedmiot darmowy lub nieustalony."
 
-        opis_przedmiotu_embed = (f"{item_data['opis']}\n\n{koszt_opis}\n")
-        if item_data.get("typ_bonusu") == "timed_role":
+        opis_przedmiotu_embed = (f"{item_data['description']}\n\n{koszt_opis}\n")
+        if item_data.get("item_type") == "timed_role": # Zmieniono na 'item_type'
             opis_przedmiotu_embed += f"**Typ:** Rola Czasowa\n"
-            if item_data.get("id_roli_do_nadania") and interaction.guild:
+            if item_data.get("role_id_to_grant") and interaction.guild: # Zmieniono na 'role_id_to_grant'
                 try:
-                    rola_obj = interaction.guild.get_role(int(item_data["id_roli_do_nadania"]))
+                    rola_obj = interaction.guild.get_role(int(item_data["role_id_to_grant"]))
                     if rola_obj:
                         opis_przedmiotu_embed += f"**Rola:** {rola_obj.mention}\n"
                 except: pass
 
-        opis_przedmiotu_embed += (f"**Czas trwania:** {self.cog.bot.formatuj_czas(item_data['czas_trwania_sekundy'], precyzyjnie=True)}" if 'czas_trwania_sekundy' in item_data and item_data['czas_trwania_sekundy'] is not None else "**Efekt:** Natychmiastowy / Jednorazowy")
+        opis_przedmiotu_embed += (f"**Czas trwania:** {self.cog.bot.formatuj_czas(item_data['duration_seconds'], precyzyjnie=True)}" if 'duration_seconds' in item_data and item_data['duration_seconds'] is not None else "**Efekt:** Natychmiastowy / Jednorazowy")
 
 
         embed = await self.cog._create_currency_embed(
             self.original_context,
-            title=f"{emoji} {item_data['nazwa']}",
+            title=f"{emoji} {item_data['name']}",
             description=opis_przedmiotu_embed,
             color=config.KOLOR_SKLEPU_PRZEDMIOT
         )
@@ -336,14 +359,16 @@ class ShopItemSelect(discord.ui.Select['ShopView']):
 class ShopView(discord.ui.View):
     message: typing.Optional[discord.Message]
 
-    def __init__(self, context: Context, bot: 'BotDiscord', cog: 'Waluta', timeout: float = 180.0):
+    def __init__(self, context: Context, bot: 'BotDiscord', cog: 'Waluta', shop_items: list[dict], timeout: float = 180.0): # Dodano shop_items
         super().__init__(timeout=timeout)
         self.original_context = context
         self.original_author_id = context.author.id
         self.bot = bot
         self.cog = cog
         self.message = None
-        self.add_item(ShopItemSelect(context, bot, cog))
+        self.shop_items = shop_items # Przechowujemy listę przedmiotów
+        self.add_item(ShopItemSelect(context, bot, cog, shop_items)) # Przekazujemy shop_items
+
 
     async def on_timeout(self):
         if self.message:
@@ -383,8 +408,14 @@ class Waluta(commands.Cog, name="waluta"):
         if context.guild and context.guild.icon:
              embed.set_thumbnail(url=context.guild.icon.url)
 
-        if not config.PRZEDMIOTY_SKLEPU:
+        if self.bot.baza_danych is None:
+            embed.description += "\n\nNiestety, skarbiec jest chwilowo niedostępny. Spróbuj ponownie później."
+            return embed
+
+        shop_items_db = await self.bot.baza_danych.pobierz_wszystkie_przedmioty_sklepu()
+        if not shop_items_db:
             embed.description += "\n\nNiestety, skarbiec jest obecnie pusty. Runa pracuje nad nowymi magicznymi przedmiotami!"
+        
         return embed
 
     @commands.hybrid_command(
@@ -551,8 +582,29 @@ class Waluta(commands.Cog, name="waluta"):
         if not context.guild: await context.send("Tylko w granicach Kronik.", ephemeral=True); return
         if self.bot.baza_danych is None: await context.send("Błąd: Skarbiec jest chwilowo niedostępny.", ephemeral=True); return
 
+        # Pobierz przedmioty z bazy danych
+        shop_items_db = await self.bot.baza_danych.pobierz_wszystkie_przedmioty_sklepu()
+        # Konwertuj krotki na słowniki dla łatwiejszego dostępu
+        shop_items_formatted = []
+        for item_tuple in shop_items_db:
+            # Upewnij się, że kolejność kolumn odpowiada kolejności w bazie danych
+            # id, name, description, cost_dukaty, cost_krysztaly, emoji, item_type, bonus_value, duration_seconds, role_id_to_grant, stock
+            shop_items_formatted.append({
+                "id": item_tuple[0],
+                "name": item_tuple[1],
+                "description": item_tuple[2],
+                "cost_dukaty": item_tuple[3],
+                "cost_krysztaly": item_tuple[4],
+                "emoji": item_tuple[5],
+                "item_type": item_tuple[6],
+                "bonus_value": item_tuple[7],
+                "duration_seconds": item_tuple[8],
+                "role_id_to_grant": item_tuple[9],
+                "stock": item_tuple[10]
+            })
+
         embed = await self._build_shop_embed(context)
-        view = ShopView(context, self.bot, self)
+        view = ShopView(context, self.bot, self, shop_items_formatted) # Przekazujemy pobrane przedmioty
 
         sent_message = await context.send(embed=embed, view=view)
         view.message = sent_message
@@ -647,7 +699,7 @@ class Waluta(commands.Cog, name="waluta"):
         nazwa_waluty_str = "Gwiezdnych Dukatów ✨" if waluta_code == "dukaty" else f"{config.NAZWA_WALUTY_PREMIUM} {config.SYMBOL_WALUTY_PREMIUM}"
         aktualne_saldo_str = f"{nowe_dukaty} ✨" if waluta_code == "dukaty" else f"{nowe_krysztaly} {config.SYMBOL_WALUTY_PREMIUM}"
 
-        opis_embed = f"Ustawiono saldo {nazwa_waluty_str} użytkownika {uzytkownik.mention} na **{aktualne_saldo_str}**."
+        opis_embed = f"Ustawiono saldo {nazwa_waluty_str.split(' ')[-2]} użytkownika {uzytkownik.mention} na **{aktualne_saldo_str}**."
         if powod: opis_embed += f"\nPowód: *{powod}*"
 
         embed = await self._create_currency_embed(context, title=f"💸 Saldo {nazwa_waluty_str.split(' ')[-2]} Zaktualizowane", description=opis_embed, color=config.KOLOR_ADMIN_WALUTA)

@@ -350,48 +350,7 @@ KOLOR_ADMIN_SUKCES_OWNER: discord.Color = discord.Color.green()
 KOLOR_ADMIN_BLAD_OWNER: discord.Color = discord.Color.red()
 KOLOR_ADMIN_SPECIAL_OWNER: discord.Color = discord.Color.purple()
 
-# --- Przedmioty Sklepu ---
-PRZEDMIOTY_SKLEPU: dict = {
-    "maly_boost_xp_1h": {
-        "nazwa": "Mały Zastrzyk Gwiezdnego Pyłu",
-        "opis": "Zwiększa zdobywane przez Ciebie XP o +25% przez następną godzinę.",
-        "koszt_dukatow": 200, "koszt_krysztalow": None,
-        "typ_bonusu": "xp_mnoznik", "wartosc_bonusu": 0.25,
-        "czas_trwania_sekundy": 3600, "emoji": "✨"
-    },
-    "sredni_boost_xp_1h": {
-        "nazwa": "Średni Zastrzyk Gwiezdnego Pyłu",
-        "opis": "Zwiększa zdobywane XP o +50% przez godzinę.",
-        "koszt_dukatow": 350, "koszt_krysztalow": 10,
-        "typ_bonusu": "xp_mnoznik", "wartosc_bonusu": 0.50,
-        "czas_trwania_sekundy": 3600, "emoji": "🌟"
-    },
-    "duzy_boost_xp_3h": {
-        "nazwa": "Duży Zastrzyk Gwiezdnego Pyłu",
-        "opis": "Zwiększa zdobywane XP o +50% aż przez trzy godziny.",
-        "koszt_dukatow": 900, "koszt_krysztalow": 25,
-        "typ_bonusu": "xp_mnoznik", "wartosc_bonusu": 0.50,
-        "czas_trwania_sekundy": 10800, "emoji": "🌠"
-    },
-    "unikalna_ramka_awatara_krysztalowa": {
-        "nazwa": "Kryształowa Ramka Awatara",
-        "opis": "Otocz swój awatar lśniącą, kryształową ramką przez 30 dni!",
-        "koszt_dukatow": None, "koszt_krysztalow": 150,
-        "typ_bonusu": "cosmetic_avatar_frame", "wartosc_bonusu": 0,
-        "czas_trwania_sekundy": 2592000, "emoji": "🖼️"
-    },
-    "rola_patrona_7d": {
-        "nazwa": "Tytuł Patrona Biblioteki (7 dni)",
-        "opis": "Zyskaj prestiżowy tytuł Patrona Wielkiej Biblioteki na 7 dni!",
-        "koszt_dukatow": 500,
-        "koszt_krysztalow": 15,
-        "typ_bonusu": "timed_role",
-        "id_roli_do_nadania": "ID_TWOJEJ_ROLI_PATRONA", # Pamiętaj, aby podmienić na prawdziwe ID roli
-        "wartosc_bonusu": 0,
-        "czas_trwania_sekundy": 604800,
-        "emoji": "👑"
-    }
-}
+# USUNIĘTO: PRZEDMIOTY_SKLEPU - Będą ładowane z bazy danych
 
 # Konfiguracja API i Sklepu Internetowego
 API_PORT: int = int(os.getenv("API_PORT", "8080"))

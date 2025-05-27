@@ -39,6 +39,14 @@ class ZarzadcaBazyDanych:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
 
+    # NOWA METODA: Pobiera pojedyncze ostrzeżenie po jego ID
+    async def pobierz_ostrzezenie_po_id(self, warn_id: int) -> tuple | None:
+        async with self.connection.execute(
+            "SELECT id, user_id, server_id, moderator_id, reason, created_at FROM warns WHERE id = ?",
+            (warn_id,)
+        ) as cursor:
+            return await cursor.fetchone()
+
     async def pobierz_ostrzezenia(self, user_id: int, server_id: int) -> list:
         async with self.connection.execute( "SELECT id, user_id, server_id, moderator_id, reason, created_at FROM warns WHERE user_id=? AND server_id=?", (str(user_id), str(server_id),),) as cursor:
             result = await cursor.fetchall()
@@ -252,7 +260,7 @@ class ZarzadcaBazyDanych:
         await self.connection.commit()
 
 
-    # --- Metody Sklepu i Przedmiotów ---
+    # --- Metody Sklepu i Przedmiotów (posiadane przez użytkowników) ---
     async def dodaj_przedmiot_uzytkownika(self, user_id: str, server_id: str, id_przedmiotu_sklepu: str, czas_zakupu_ts: int, czas_wygasniecia_ts: int | None, typ_bonusu: str, wartosc_bonusu: float) -> None:
         await self.connection.execute(
             """
@@ -275,6 +283,19 @@ class ZarzadcaBazyDanych:
         async with self.connection.execute(query, (user_id, server_id, teraz_ts)) as cursor:
             return await cursor.fetchall() # type: ignore
 
+    async def pobierz_posiadane_przedmioty_uzytkownika(self, user_id: str, server_id: str) -> list[tuple]:
+        """Pobiera wszystkie posiadane przedmioty przez użytkownika."""
+        query = """
+            SELECT p.id_posiadania, p.id_przedmiotu_sklepu, p.czas_zakupu_timestamp, p.czas_wygasniecia_timestamp,
+                   p.typ_bonusu, p.wartosc_bonusu, s.name, s.emoji
+            FROM posiadane_przedmioty p
+            JOIN shop_items s ON p.id_przedmiotu_sklepu = s.id
+            WHERE p.user_id = ? AND p.server_id = ?
+            ORDER BY p.czas_zakupu_timestamp DESC;
+        """
+        async with self.connection.execute(query, (user_id, server_id)) as cursor:
+            return await cursor.fetchall() # type: ignore
+
     async def usun_wygasle_posiadane_przedmioty(self) -> int:
         teraz_ts = int(time.time())
         cursor = await self.connection.execute(
@@ -283,6 +304,41 @@ class ZarzadcaBazyDanych:
         )
         await self.connection.commit()
         return cursor.rowcount
+
+    # --- NOWE METODY: Zarządzanie przedmiotami w sklepie (definicje przedmiotów) ---
+    async def dodaj_lub_zaktualizuj_przedmiot_sklepu(self, item_id: str, name: str, description: str, cost_dukaty: typing.Optional[int], cost_krysztaly: typing.Optional[int], emoji: typing.Optional[str], item_type: str, bonus_value: typing.Optional[float], duration_seconds: typing.Optional[int], role_id_to_grant: typing.Optional[str], stock: int) -> None:
+        await self.connection.execute(
+            """
+            INSERT INTO shop_items (id, name, description, cost_dukaty, cost_krysztaly, emoji, item_type, bonus_value, duration_seconds, role_id_to_grant, stock)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET
+            name = excluded.name,
+            description = excluded.description,
+            cost_dukaty = excluded.cost_dukaty,
+            cost_krysztaly = excluded.cost_krysztaly,
+            emoji = excluded.emoji,
+            item_type = excluded.item_type,
+            bonus_value = excluded.bonus_value,
+            duration_seconds = excluded.duration_seconds,
+            role_id_to_grant = excluded.role_id_to_grant,
+            stock = excluded.stock;
+            """,
+            (item_id, name, description, cost_dukaty, cost_krysztaly, emoji, item_type, bonus_value, duration_seconds, role_id_to_grant, stock)
+        )
+        await self.connection.commit()
+
+    async def pobierz_przedmiot_sklepu(self, item_id: str) -> tuple | None:
+        async with self.connection.execute("SELECT id, name, description, cost_dukaty, cost_krysztaly, emoji, item_type, bonus_value, duration_seconds, role_id_to_grant, stock FROM shop_items WHERE id = ?", (item_id,)) as cursor:
+            return await cursor.fetchone()
+
+    async def pobierz_wszystkie_przedmioty_sklepu(self) -> list[tuple]:
+        async with self.connection.execute("SELECT id, name, description, cost_dukaty, cost_krysztaly, emoji, item_type, bonus_value, duration_seconds, role_id_to_grant, stock FROM shop_items ORDER BY name ASC") as cursor:
+            return await cursor.fetchall() # type: ignore
+
+    async def usun_przedmiot_sklepu(self, item_id: str) -> None:
+        await self.connection.execute("DELETE FROM shop_items WHERE id = ?", (item_id,))
+        await self.connection.commit()
+
 
     # --- Metody Ról Czasowych ---
     async def dodaj_aktywna_role_czasowa(self, user_id: str, server_id: str, rola_id: str, czas_nadania_ts: int, czas_wygasniecia_ts: int, id_przedmiotu_sklepu: typing.Optional[str] = None) -> int:
@@ -619,3 +675,77 @@ class ZarzadcaBazyDanych:
         async with self.connection.execute("SELECT xp_miesieczne FROM miesieczne_xp WHERE user_id = ? AND server_id = ? AND rok = ? AND miesiac = ?", (user_id, server_id, rok, miesiac)) as cursor:
             result = await cursor.fetchone()
             return result[0] if result else 0
+
+    # --- NOWE METODY: Zarządzanie konfiguracją serwera ---
+    async def pobierz_konfiguracje_serwera(self, server_id: str) -> dict:
+        """Pobiera konfigurację serwera z bazy danych lub zwraca domyślne wartości."""
+        query = """
+            SELECT xp_blocked_globally, xp_multiplier_event, xp_event_name,
+                   welcome_channel_id, default_role_id,
+                   live_ranking_channel_id, live_ranking_message_id
+            FROM server_config WHERE server_id = ?
+        """
+        async with self.connection.execute(query, (server_id,)) as cursor:
+            row = await cursor.fetchone()
+
+        if row:
+            return {
+                "xp_blocked_globally": bool(row[0]),
+                "xp_multiplier_event": row[1],
+                "xp_event_name": row[2],
+                "welcome_channel_id": row[3],
+                "default_role_id": row[4],
+                "live_ranking_channel_id": row[5],
+                "live_ranking_message_id": row[6]
+            }
+        else:
+            # Zwróć domyślne wartości, jeśli konfiguracja nie istnieje
+            return {
+                "xp_blocked_globally": False,
+                "xp_multiplier_event": 1.0,
+                "xp_event_name": None,
+                "welcome_channel_id": None,
+                "default_role_id": None,
+                "live_ranking_channel_id": None,
+                "live_ranking_message_id": None
+            }
+
+    async def ustaw_konfiguracje_serwera(self, server_id: str, **kwargs) -> None:
+        """
+        Ustawia lub aktualizuje konfigurację serwera w bazie danych.
+        Używa ON CONFLICT DO UPDATE, aby wstawić lub zaktualizować.
+        """
+        # Pobierz aktualną konfigurację, aby zachować niezmienione pola
+        current_config = await self.pobierz_konfiguracje_serwera(server_id)
+        
+        # Zaktualizuj tylko te pola, które są przekazane w kwargs
+        updated_config = {**current_config, **kwargs}
+
+        await self.connection.execute(
+            """
+            INSERT INTO server_config (
+                server_id, xp_blocked_globally, xp_multiplier_event, xp_event_name,
+                welcome_channel_id, default_role_id, live_ranking_channel_id, live_ranking_message_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(server_id) DO UPDATE SET
+                xp_blocked_globally = excluded.xp_blocked_globally,
+                xp_multiplier_event = excluded.xp_multiplier_event,
+                xp_event_name = excluded.xp_event_name,
+                welcome_channel_id = excluded.welcome_channel_id,
+                default_role_id = excluded.default_role_id,
+                live_ranking_channel_id = excluded.live_ranking_channel_id,
+                live_ranking_message_id = excluded.live_ranking_message_id
+            """,
+            (
+                server_id,
+                1 if updated_config["xp_blocked_globally"] else 0,
+                updated_config["xp_multiplier_event"],
+                updated_config["xp_event_name"],
+                updated_config["welcome_channel_id"],
+                updated_config["default_role_id"],
+                updated_config["live_ranking_channel_id"],
+                updated_config["live_ranking_message_id"]
+            )
+        )
+        await self.connection.commit()
+
