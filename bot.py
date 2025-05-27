@@ -1,4 +1,4 @@
-# WERSJA KODU: BOT_PY_VERY_FINAL_CHECK_27_05_A
+# WERSJA KODU: BOT_PY_FINAL_ATTR_FIX
 """
 Copyright © Krypton 2019-Present - https://github.com/kkrypt0nn (https://krypton.ninja)
 Opis:
@@ -253,7 +253,7 @@ class BotDiscord(commands.Bot):
 
         await self.zaladuj_kapsuly()
         self.zadanie_statusu.start()
-        self.zadanie_xp_za_glos.start()
+        self.zadanie_xp_za_glos.start() # Upewnij się, że ta linia jest obecna
         self.zadanie_live_ranking.start()
         self.zadanie_czyszczenia_bonusow.start()
         self.zadanie_sprawdzania_rol_czasowych.start()
@@ -321,10 +321,7 @@ class BotDiscord(commands.Bot):
                 await kanal_do_wyslania.send(embed=embed)
             except discord.Forbidden: self.logger.warning(f"Brak uprawnień do wysłania wiad. o awansie na {kanal_do_wyslania.name}.")
 
-    async def sprawdz_i_awansuj(self, member: discord.Member, guild: discord.Guild, _processed_level_missions: typing.Optional[set[int]] = None):
-        if _processed_level_missions is None:
-            _processed_level_missions = set()
-
+    async def sprawdz_i_awansuj(self, member: discord.Member, guild: discord.Guild):
         if self.baza_danych is None: return
         user_id, server_id = member.id, guild.id
         dane_uzytkownika_pelne = await self.baza_danych.pobierz_lub_stworz_doswiadczenie(user_id, server_id)
@@ -340,11 +337,7 @@ class BotDiscord(commands.Bot):
 
             await self.wyslij_wiadomosc_o_awansie(member, guild, nowy_poziom_po_awansie, dukaty_za_poziom, nowe_saldo_dukatow_val)
             await self.sprawdz_i_przyznaj_osiagniecia(member, guild, "poziom_xp", nowy_poziom_po_awansie)
-            
-            if nowy_poziom_po_awansie not in _processed_level_missions:
-                await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "osiagniecie_poziomu_xp", nowy_poziom_po_awansie)
-                _processed_level_missions.add(nowy_poziom_po_awansie)
-
+            await self.aktualizuj_i_sprawdz_misje_po_akcji(member, guild, "osiagniecie_poziomu_xp", nowy_poziom_po_awansie)
 
             nagroda_rola_dane = await self.baza_danych.pobierz_nagrode_za_poziom(server_id, nowy_poziom_po_awansie)
             if nagroda_rola_dane:
@@ -359,7 +352,7 @@ class BotDiscord(commands.Bot):
                             await kanal_do_wyslania_rola.send(embed=embed_rola)
                     except discord.Forbidden: self.logger.warning(f"Brak uprawnień do nadania roli '{rola.name}'.")
                 else: self.logger.warning(f"Nie znaleziono roli o ID {rola_id_int} (nagroda za poziom).")
-            await self.sprawdz_i_awansuj(member, guild, _processed_level_missions) # Przekazanie zbioru dalej
+            await self.sprawdz_i_awansuj(member, guild)
 
     async def sprawdz_i_przyznaj_osiagniecia(self, member: discord.Member, guild: discord.Guild, typ_sprawdzanego_warunku: typing.Optional[str] = None, aktualna_wartosc_warunku: typing.Optional[typing.Any] = None, dodatkowe_dane: typing.Optional[dict] = None):
         if self.baza_danych is None: return
@@ -854,7 +847,6 @@ class BotDiscord(commands.Bot):
         await self.wait_until_ready()
         self.logger.info("Pętla końca sezonu miesięcznego gotowa do startu.")
 
-
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
         if not message.guild or message.author.bot or not isinstance(message.channel, (discord.TextChannel, discord.Thread)):
@@ -920,29 +912,30 @@ class BotDiscord(commands.Bot):
 
             if not self.aktywni_na_glosowym_start_time[server_id]: del self.aktywni_na_glosowym_start_time[server_id]
 
-    @tasks.loop(minutes=config.XP_ZA_GLOS_CO_ILE_MINUT)
-    async def zadanie_xp_za_glos(self):
+    @tasks.loop(minutes=config.XP_ZA_GLOS_CO_ILE_MINUT) # Używamy stałej z config.py
+    async def zadanie_xp_za_glos(self): # Upewnij się, że nazwa jest poprawna
         if self.baza_danych is None: return
         for guild_obj in self.guilds:
             if guild_obj.id in self.aktywni_na_glosowym_start_time:
-                for user_id in list(self.aktywni_na_glosowym_start_time[guild_obj.id].keys()):
+                for user_id in list(self.aktywni_na_glosowym_start_time[guild_obj.id].keys()): # Używamy list() do bezpiecznej iteracji
                     member = guild_obj.get_member(user_id)
                     if not member or member.bot:
-                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]:
+                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]: # Dodatkowe sprawdzenie
                             del self.aktywni_na_glosowym_start_time[guild_obj.id][user_id]
                         continue
                     if member.voice and member.voice.channel and \
                        (member.voice.channel.guild.afk_channel is None or member.voice.channel.guild.afk_channel.id != member.voice.channel.id) and \
                        not member.voice.self_deaf and not member.voice.self_mute and \
-                       not member.voice.deaf and not member.voice.mute:
+                       not member.voice.deaf and not member.voice.mute: # Sprawdzenie ogólnego wyciszenia/ogłuszenia
                         await self.przyznaj_xp(
                             member, guild_obj, member.voice.channel,
                             config.XP_ZA_GLOS_ILOSC_MIN, config.XP_ZA_GLOS_ILOSC_MAX,
                             None, 0, "aktywność na kanale głosowym"
                         )
-                    else:
-                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]:
+                    else: # Jeśli użytkownik nie jest już aktywny na kanale głosowym
+                        if user_id in self.aktywni_na_glosowym_start_time[guild_obj.id]: # Dodatkowe sprawdzenie
                             del self.aktywni_na_glosowym_start_time[guild_obj.id][user_id]
+            # Usuń pusty słownik dla serwera, jeśli istnieje
             if guild_obj.id in self.aktywni_na_glosowym_start_time and not self.aktywni_na_glosowym_start_time[guild_obj.id]:
                 del self.aktywni_na_glosowym_start_time[guild_obj.id]
 
@@ -1027,7 +1020,7 @@ class BotDiscord(commands.Bot):
                     self.logger.info(f"Ranking miesięczny XP dla {guild.name} ({rok_sezonu}-{miesiac_sezonu}): {ranking_miesieczny}")
 
                     embed_wyniki = discord.Embed(
-                        title=f"🏆 Zakończenie Sezonu Rankingu XP - {miesiac_sezonu}/{rok_sezonu} 🏆",
+                        title=f"� Zakończenie Sezonu Rankingu XP - {miesiac_sezonu}/{rok_sezonu} 🏆",
                         description=f"Oto najlepsi Kronikarze serwera **{guild.name}** w minionym miesiącu!",
                         color=config.KOLOR_RANKINGU_SEZONOWEGO,
                         timestamp=teraz
@@ -1178,4 +1171,3 @@ if __name__ == "__main__":
     except Exception as e:
         bot.logger.critical(f"Krytyczny błąd podczas uruchamiania Kronik Elary: {e}", exc_info=True)
         sys.exit(f"Krytyczny błąd: {e}")
-

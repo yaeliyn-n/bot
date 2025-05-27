@@ -126,7 +126,7 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
         else:
             opis_list = []
             medale = ["🥇", "🥈", "🥉"]
-            for i, (uid_str, xp, poz) in enumerate(ranking):
+            for i, (uid_str, xp, poz) in enumerate(ranking): # uid jest stringiem z bazy
                 uid = int(uid_str)
                 uzytkownik_obj = context.guild.get_member(uid)
                 nazwa_uzytkownika = uzytkownik_obj.display_name if uzytkownik_obj else f"Nieznany ({uid})"
@@ -138,8 +138,8 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
 
     @commands.hybrid_command(name="rankingmiesiecznyxp", aliases=["miesiecznyrankingxp", "topxpsezon"], description="Wyświetla miesięczny ranking XP.")
     @app_commands.describe(
-        rok="Rok, dla którego wyświetlić ranking (opcjonalnie, domyślnie poprzedni miesiąc).",
-        miesiac="Miesiąc (1-12), dla którego wyświetlić ranking (opcjonalnie, domyślnie poprzedni miesiąc)."
+        rok="Rok, dla którego wyświetlić ranking (opcjonalnie, domyślnie bieżący/poprzedni).",
+        miesiac="Miesiąc (1-12), dla którego wyświetlić ranking (opcjonalnie, domyślnie bieżący/poprzedni)."
     )
     async def rankingmiesiecznyxp(self, context: Context, rok: typing.Optional[int] = None, miesiac: typing.Optional[int] = None):
         if not context.guild or self.bot.baza_danych is None:
@@ -149,14 +149,19 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
         teraz = datetime.now(UTC)
         
         if rok is None or miesiac is None:
-            # Domyślnie pokazujemy ranking za poprzedni zakończony miesiąc
-            docelowa_data_do_rankingu = (teraz.replace(day=1) - timedelta(days=1))
+            # Domyślnie pokaż ranking za bieżący miesiąc, jeśli nie jest zbyt wcześnie
+            # lub za poprzedni, jeśli jest początek miesiąca
+            if teraz.day < 3 and teraz.month == 1: # Jeśli jest 1 lub 2 stycznia, pokaż grudzień poprzedniego roku
+                 docelowa_data_do_rankingu = datetime(teraz.year -1, 12, 1, tzinfo=UTC)
+            elif teraz.day < 3 : # Jeśli jest 1 lub 2 dzień miesiąca (ale nie stycznia), pokaż poprzedni miesiąc
+                 docelowa_data_do_rankingu = (teraz.replace(day=1) - timedelta(days=1)).replace(day=1)
+            else: # W pozostałych przypadkach pokaż bieżący miesiąc
+                 docelowa_data_do_rankingu = teraz.replace(day=1)
         else:
             if not (1 <= miesiac <= 12):
                 await context.send("Nieprawidłowy numer miesiąca. Podaj liczbę od 1 do 12.", ephemeral=True)
                 return
             try:
-                # Ustawiamy datę na pierwszy dzień podanego miesiąca, aby łatwo uzyskać rok i miesiąc
                 docelowa_data_do_rankingu = datetime(rok, miesiac, 1, tzinfo=UTC)
             except ValueError:
                 await context.send("Nieprawidłowa data. Sprawdź rok i miesiąc.", ephemeral=True)
@@ -196,7 +201,6 @@ class Doswiadczenie(commands.Cog, name="doświadczenie"):
         
         embed.set_footer(text=f"Ranking dla {nazwa_miesiaca_pl} {rok_rankingu} | Kroniki Elary", icon_url=context.guild.icon.url if context.guild.icon else None)
         await context.send(embed=embed)
-
 
     @commands.hybrid_command(name="dodajrolenagrode", description="Dodaje rolę jako nagrodę za osiągnięcie poziomu.")
     @has_permissions(administrator=True)
