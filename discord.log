@@ -1,0 +1,669 @@
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Zalogowano jako Elara (ID: 1375562999984689173) - Witaj w Kronikach Elary!
+[2025-05-28 06:16:05] [INFO    ] discord_bot: discord.py API: 2.5.2, Python: 3.13.3
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Działam na: Windows 11 (nt)
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Prefix bota: !
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Kanał powitalny: 1375477534623531112
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Główny ID serwera API: 1375477258172502086
+[2025-05-28 06:16:05] [WARNING ] discord_bot: API_KEY nie ustawiony. Dostęp otwarty (DEV).
+[2025-05-28 06:16:05] [INFO    ] discord_bot: API serwer na porcie: 8080
+[2025-05-28 06:16:05] [INFO    ] discord_bot: -------------------
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Ścieżka do bazy danych: C:\Users\czark\Desktop\ProjekElara\Bot/database/database.db
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Ścieżka do pliku schematu: C:\Users\czark\Desktop\ProjekElara\Bot/database/schema.sql
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Próba połączenia z bazą danych i wykonania skryptu schematu...
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Rozpoczynam wykonywanie skryptu schematu...
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Pomyślnie ZAKOŃCZONO wykonywanie skryptu schematu bazy danych dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Próba wykonania db.commit()...
+[2025-05-28 06:16:05] [INFO    ] discord_bot: db.commit() wykonany pomyślnie.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Połączono z bazą danych i zainicjowano Zarządcę.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Inicjalizacja timestampów resetu misji: Dzienny: 2025-05-28 04:00:00+00:00, Tygodniowy: 2025-05-26 04:00:00+00:00
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Kapsuła ApiServerCog załadowana, próba uruchomienia serwera API.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'api_server' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'doswiadczenie' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'fun' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'general' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Kapsuła Giveaway załadowana, zadanie end_giveaways_task uruchomione.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'giveaway' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'misje' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'moderation' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Serwer API bota uruchomiony na http://0.0.0.0:8080
+[2025-05-28 06:16:05] [INFO    ] discord_bot: FFmpeg znaleziony. Kapsuła muzyczna może działać poprawnie.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'muzyka' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'owner' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'pomoc' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'template' dla Kronik Elary.
+[2025-05-28 06:16:05] [INFO    ] discord_bot: Załadowano kapsułę 'waluta' dla Kronik Elary.
+[2025-05-28 06:16:08] [INFO    ] discord_bot: Pętla kończenia konkursów (end_giveaways_task) gotowa do startu.
+[2025-05-28 06:16:08] [INFO    ] discord_bot: Pętla resetowania misji gotowa do startu.
+[2025-05-28 06:16:08] [INFO    ] discord_bot: Pętla końca sezonu miesięcznego gotowa do startu.
+[2025-05-28 09:25:53] [INFO    ] discord_bot: Połączono z kanałem głosowym: fdsafas na serwerze Kroniki Elary
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] _play_next_song: Rozpoczęto przetwarzanie następnego utworu.
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] _play_next_song: Rozpoczęto odtwarzanie: Jula - Za każdym razem (Official Video)
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] _play_next_song: Tworzenie embedu NP i widoku kontrolek.
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] MusicControlView.update_buttons: Rozpoczęto aktualizację przycisków.
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] MusicControlView.update_buttons: Zakończono. Liczba dzieci widoku: 6
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] _play_next_song: Utworzono nowy widok kontrolek. Liczba przycisków: 6
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] _play_next_song: Wysyłanie nowej wiadomości NP z widokiem.
+[2025-05-28 09:25:57] [INFO    ] discord_bot: [Guild 1375477258172502086] _play_next_song: Wysłano nową wiadomość NP z widokiem.
+[2025-05-28 09:26:08] [INFO    ] discord_bot: Przyznano 56 XP dla smollkitty za aktywność na kanale głosowym.
+[2025-05-28 09:26:12] [INFO    ] discord_bot: [Guild 1375477258172502086] MusicControlView.update_buttons: Rozpoczęto aktualizację przycisków.
+[2025-05-28 09:26:12] [INFO    ] discord_bot: [Guild 1375477258172502086] MusicControlView.update_buttons: Zakończono. Liczba dzieci widoku: 6
+[2025-05-28 09:26:14] [INFO    ] discord_bot: [Guild 1375477258172502086] MusicControlView.update_buttons: Rozpoczęto aktualizację przycisków.
+[2025-05-28 09:26:14] [INFO    ] discord_bot: [Guild 1375477258172502086] MusicControlView.update_buttons: Zakończono. Liczba dzieci widoku: 6
+[2025-05-28 09:27:26] [INFO    ] discord_bot: Bot jest sam na kanale fdsafas (Kroniki Elary). Rozpoczynam odliczanie do opuszczenia.
+[2025-05-28 09:29:18] [INFO    ] discord_bot: Bot jest sam na kanale fdsafas (Kroniki Elary). Rozpoczynam odliczanie do opuszczenia.
+[2025-05-28 09:30:18] [INFO    ] discord_bot: Bot nadal sam. Opuszczam kanał fdsafas.
+[2025-05-28 09:30:18] [INFO    ] discord_bot: Pętla odtwarzania dla serwera 1375477258172502086 została świadomie anulowana.
+[2025-05-28 18:31:49] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-05-28 23:25:23] [INFO    ] discord_bot: Wykonano 'codzienna' przez yaeliynn na Kroniki Elary.
+[2025-05-28 23:25:23] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Wyostrzony Słuch' (ID tieru: szept_elary_1) na serwerze Kroniki Elary.
+[2025-05-28 23:25:24] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Ziarnko do Ziarnka' (ID tieru: dukaty_500) na serwerze Kroniki Elary.
+[2025-05-28 23:25:24] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Adept Kronik' (ID tieru: poziom_5) na serwerze Kroniki Elary.
+[2025-05-28 23:25:30] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Strażnik Wiedzy' (ID tieru: poziom_10) na serwerze Kroniki Elary.
+[2025-05-28 23:25:32] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-05-28 23:25:37] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:37] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:37] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:38] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:38] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:38] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:38] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:38] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:38] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:39] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:39] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:43] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:43] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:44] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:44] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Mieszek Pełen Blasku' (ID tieru: dukaty_2500) na serwerze Kroniki Elary.
+[2025-05-28 23:25:44] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:45] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:45] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:45] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:45] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:45] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:45] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:46] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-28 23:25:46] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-28 23:25:46] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do smollkitty.
+[2025-05-29 00:48:45] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 00:55:46] [INFO    ] discord_bot: Przyznano 72 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 00:56:45] [INFO    ] discord_bot: Przyznano 12 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-29 00:56:48] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 00:58:26] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 00:58:54] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 00:59:44] [INFO    ] discord_bot: Wykonano 'portfel' przez yaeliynn na Kroniki Elary.
+[2025-05-29 00:59:54] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:00:21] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:01:22] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:01:34] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:03:06] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:03:49] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:03:49] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Ziarnko do Ziarnka' (ID tieru: dukaty_500) na serwerze Kroniki Elary.
+[2025-05-29 01:04:09] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:05:18] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:06:25] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:06:28] [INFO    ] discord_bot: Przyznano 40 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:06:29] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Adept Kronik' (ID tieru: poziom_5) na serwerze Kroniki Elary.
+[2025-05-29 01:06:35] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Strażnik Wiedzy' (ID tieru: poziom_10) na serwerze Kroniki Elary.
+[2025-05-29 01:06:41] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:42] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:42] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:42] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:42] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:43] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:43] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:43] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:43] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:43] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:43] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:48] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:48] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:48] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:48] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Mieszek Pełen Blasku' (ID tieru: dukaty_2500) na serwerze Kroniki Elary.
+[2025-05-29 01:06:49] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:49] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:49] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:49] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:49] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:50] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:50] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:50] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:06:50] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-05-29 01:06:50] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:07:26] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:07:26] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Początkujący Skryba' (ID tieru: wiadomosci_1) na serwerze Kroniki Elary.
+[2025-05-29 01:07:35] [INFO    ] discord_bot: Przyznano 46 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:08:37] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:08:38] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:09:44] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:10:11] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:10:11] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Początkujący Skryba' (ID tieru: wiadomosci_1) na serwerze Kroniki Elary.
+[2025-05-29 01:10:55] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:12:04] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:12:27] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:13:09] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:13:09] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Poranny Zgiełk Kronik'.
+[2025-05-29 01:13:10] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Poranny Zgiełk Kronik' do smollkitty.
+[2025-05-29 01:14:13] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:15:21] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:15:38] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:16:27] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:16:43] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:17:30] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:17:44] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:19:23] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:19:23] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Poranny Zgiełk Kronik'.
+[2025-05-29 01:19:23] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Poranny Zgiełk Kronik' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-29 01:19:45] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:22:44] [INFO    ] discord_bot: Wykonano 'profil' przez yaeliynn na Kroniki Elary.
+[2025-05-29 01:23:10] [INFO    ] discord_bot: Wykonano 'osiagniecia pokaz' przez yaeliynn na Kroniki Elary.
+[2025-05-29 01:23:33] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:24:03] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:25:08] [INFO    ] discord_bot: Przyznano 46 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:25:44] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:28:39] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:29:38] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:33:59] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:34:39] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:35:37] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:35:49] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:36:38] [INFO    ] discord_bot: Przyznano 46 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:37:18] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:37:50] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:38:27] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:39:27] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:39:59] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:40:30] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:42:18] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:43:25] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:43:34] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:44:38] [INFO    ] discord_bot: Przyznano 46 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:47:03] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:48:29] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:55:31] [INFO    ] discord_bot: Wykonano 'portfel' przez jahuu na Kroniki Elary.
+[2025-05-29 01:55:31] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Wyostrzony Słuch' (ID tieru: szept_elary_1) na serwerze Kroniki Elary.
+[2025-05-29 01:55:36] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 01:57:31] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:58:49] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 01:58:49] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Arcymistrz Opowieści' (ID tieru: poziom_25) na serwerze Kroniki Elary.
+[2025-05-29 02:04:38] [INFO    ] discord_bot: Przyznano 107 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:05:32] [INFO    ] discord_bot: Przyznano 109 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 02:05:47] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:07:01] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:07:13] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 02:07:24] [INFO    ] discord_bot: Przyznano 12 XP dla smollkitty za dodanie reakcji.
+[2025-05-29 02:07:39] [INFO    ] discord_bot: Przyznano 12 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-29 02:08:14] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:08:28] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 02:09:27] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:11:07] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:14:01] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:17:04] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:23:52] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:24:23] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-05-29 02:30:35] [INFO    ] discord_bot: Przyznano 10 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-29 02:52:04] [INFO    ] discord_bot: Przyznano 9 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-29 02:52:08] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 02:56:26] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 02:56:42] [INFO    ] discord_bot: Przyznano 9 XP dla smollkitty za dodanie reakcji.
+[2025-05-29 02:59:59] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-29 03:00:00] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Arcymistrz Opowieści' (ID tieru: poziom_25) na serwerze Kroniki Elary.
+[2025-05-29 06:16:08] [INFO    ] discord_bot: Resetowanie misji dziennych. Poprzedni reset: 2025-05-28 04:00:00+00:00, Nowy reset: 2025-05-29 04:00:00+00:00
+[2025-05-29 13:02:41] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 13:02:57] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-05-29 22:19:57] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-29 22:20:05] [INFO    ] discord_bot: Przyznano 9 XP dla smollkitty za dodanie reakcji.
+[2025-05-29 22:21:13] [INFO    ] discord_bot: Wykonano 'codzienna' przez yaeliynn na Kroniki Elary.
+[2025-05-29 22:21:17] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-05-29 22:21:32] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-05-30 00:06:26] [INFO    ] discord_bot: Wykonano 'codzienna' przez yaeliynn na Kroniki Elary.
+[2025-05-30 00:06:32] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-05-30 06:16:08] [INFO    ] discord_bot: Resetowanie misji dziennych. Poprzedni reset: 2025-05-29 04:00:00+00:00, Nowy reset: 2025-05-30 04:00:00+00:00
+[2025-05-30 15:40:15] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-05-30 15:40:18] [INFO    ] discord_bot: Wykonano 'codzienna' przez yaeliynn na Kroniki Elary.
+[2025-05-30 15:40:32] [INFO    ] discord_bot: Przyznano 131 XP dla smollkitty za napisanie wiadomości.
+[2025-05-30 15:40:32] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Iskra Codzienności' (ID tieru: streak_3) na serwerze Kroniki Elary.
+[2025-05-30 15:40:39] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-05-30 18:40:10] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-30 18:40:15] [INFO    ] discord_bot: Przyznano 10 XP dla smollkitty za dodanie reakcji.
+[2025-05-30 18:40:22] [INFO    ] discord_bot: Wykonano 'profil' przez yaeliynn na Kroniki Elary.
+[2025-05-30 21:23:51] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-05-30 21:23:58] [INFO    ] discord_bot: Przyznano 9 XP dla smollkitty za dodanie reakcji.
+[2025-05-30 21:55:45] [INFO    ] discord_bot: Wykonano 'pomoc' przez yaeliynn na Kroniki Elary.
+[2025-05-30 23:50:25] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-30 23:50:25] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Rozmowny Opowiadacz' (ID tieru: wiadomosci_2) na serwerze Kroniki Elary.
+[2025-05-30 23:50:32] [INFO    ] discord_bot: Przyznano 12 XP dla smollkitty za dodanie reakcji.
+[2025-05-30 23:50:38] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-05-30 23:50:43] [INFO    ] discord_bot: Wykonano 'codzienna' przez yaeliynn na Kroniki Elary.
+[2025-05-31 00:17:03] [INFO    ] discord_bot: Przyznano 99 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 00:17:03] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Iskra Codzienności' (ID tieru: streak_3) na serwerze Kroniki Elary.
+[2025-05-31 00:17:11] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-31 02:13:03] [INFO    ] discord_bot: Przyznano 165 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 02:13:11] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-05-31 02:13:11] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Echa Wspólnoty'.
+[2025-05-31 02:13:11] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Echa Wspólnoty' do smollkitty.
+[2025-05-31 02:13:11] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Echa Wspólnoty'.
+[2025-05-31 02:13:12] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Echa Wspólnoty' do smollkitty.
+[2025-05-31 02:13:45] [INFO    ] discord_bot: Przyznano 130 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 02:16:09] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 02:49:49] [INFO    ] discord_bot: Przyznano 9 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 02:49:57] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-31 06:16:08] [INFO    ] discord_bot: Resetowanie misji dziennych. Poprzedni reset: 2025-05-30 04:00:00+00:00, Nowy reset: 2025-05-31 04:00:00+00:00
+[2025-05-31 12:29:59] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 12:30:07] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-05-31 12:41:55] [INFO    ] discord_bot: Przyznano 12 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 14:55:05] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 14:55:11] [INFO    ] discord_bot: Przyznano 10 XP dla smollkitty za dodanie reakcji.
+[2025-05-31 14:55:16] [INFO    ] discord_bot: Wykonano 'codzienna' przez yaeliynn na Kroniki Elary.
+[2025-05-31 14:55:20] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-05-31 15:28:36] [INFO    ] discord_bot: Przyznano 10 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 15:59:58] [INFO    ] discord_bot: Przyznano 12 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 16:40:11] [INFO    ] discord_bot: Przyznano 9 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 16:40:14] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-31 16:57:11] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 16:57:29] [INFO    ] discord_bot: Przyznano 10 XP dla smollkitty za dodanie reakcji.
+[2025-05-31 17:43:12] [INFO    ] discord_bot: Przyznano 11 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 17:43:12] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Echa Wspólnoty'.
+[2025-05-31 17:43:12] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Echa Wspólnoty' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-05-31 17:43:20] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-05-31 17:46:09] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 18:40:40] [INFO    ] discord_bot: Przyznano 12 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-05-31 18:44:43] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 18:44:49] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-05-31 23:12:20] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-05-31 23:12:30] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-05-31 23:12:30] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Echa Wspólnoty'.
+[2025-05-31 23:12:31] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Echa Wspólnoty' do smollkitty.
+[2025-06-01 00:17:01] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 00:17:11] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 06:16:08] [INFO    ] discord_bot: Resetowanie misji dziennych. Poprzedni reset: 2025-05-31 04:00:00+00:00, Nowy reset: 2025-06-01 04:00:00+00:00
+[2025-06-01 12:43:21] [INFO    ] discord_bot: Przyznano 198 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 12:43:27] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 12:43:52] [INFO    ] discord_bot: Wykonano 'rankingxp' przez yaeliynn na Kroniki Elary.
+[2025-06-01 13:19:31] [INFO    ] discord_bot: Przyznano 193 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 16:42:28] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 16:42:36] [INFO    ] discord_bot: Przyznano 12 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 16:46:03] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 16:48:37] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 16:48:42] [INFO    ] discord_bot: Wykonano 'pracuj' przez yaeliynn na Kroniki Elary.
+[2025-06-01 16:48:48] [INFO    ] discord_bot: Wykonano 'codzienna' przez yaeliynn na Kroniki Elary.
+[2025-06-01 16:53:31] [INFO    ] discord_bot: Wykonano 'profil' przez yaeliynn na Kroniki Elary.
+[2025-06-01 19:54:25] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 19:54:32] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 20:32:54] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 20:33:03] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 20:33:03] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Uważny Słuchacz' (ID tieru: reakcje_20) na serwerze Kroniki Elary.
+[2025-06-01 21:00:57] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 21:07:09] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 21:07:15] [INFO    ] discord_bot: Przyznano 11 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-06-01 21:07:56] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 21:08:16] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 21:09:07] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 21:11:01] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 21:20:32] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 21:22:00] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 21:22:06] [INFO    ] discord_bot: Przyznano 12 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 21:22:06] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Echa Wspólnoty'.
+[2025-06-01 21:22:06] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Echa Wspólnoty' do smollkitty.
+[2025-06-01 22:01:58] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:02:03] [INFO    ] discord_bot: Przyznano 9 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 22:11:47] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:17:47] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 22:17:54] [INFO    ] discord_bot: Przyznano 11 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-06-01 22:33:04] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:33:04] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Poranny Zgiełk Kronik'.
+[2025-06-01 22:33:04] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Poranny Zgiełk Kronik' do smollkitty.
+[2025-06-01 22:37:56] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 22:40:13] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:46:50] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 22:47:18] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:48:09] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 22:48:34] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:49:21] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 22:49:39] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:50:56] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:52:04] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:52:19] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 22:53:06] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:53:23] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-06-01 22:54:29] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 22:58:59] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:02:06] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:07:21] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:08:04] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:09:02] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:09:37] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:10:12] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:11:12] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:11:56] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:11:56] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Rozmowny Opowiadacz' (ID tieru: wiadomosci_2) na serwerze Kroniki Elary.
+[2025-06-01 23:12:21] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:13:38] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:13:38] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Poranny Zgiełk Kronik'.
+[2025-06-01 23:13:39] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Poranny Zgiełk Kronik' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-01 23:14:09] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:15:51] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:16:51] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:16:53] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:18:05] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:18:33] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:19:26] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:20:32] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:21:54] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:22:36] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:23:32] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:23:36] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:26:13] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:27:43] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:29:51] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:31:40] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:32:26] [INFO    ] discord_bot: Wykonano 'rankingwaluty' przez yaeliynn na Kroniki Elary.
+[2025-06-01 23:32:47] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:33:59] [INFO    ] discord_bot: Wykonano 'portfel' przez yaeliynn na Kroniki Elary.
+[2025-06-01 23:36:46] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:40:35] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:40:41] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:40:41] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Gawędziarz Kronik' (ID tieru: wiadomosci_3) na serwerze Kroniki Elary.
+[2025-06-01 23:41:01] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:01] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:01] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:01] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:01] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:02] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:02] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:02] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:02] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:02] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:02] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:07] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:07] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:07] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:07] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:08] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:08] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:08] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:08] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:08] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:08] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:09] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:09] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:13] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:13] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:14] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:14] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:14] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:14] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:15] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:15] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:15] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:15] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:17] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:17] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:18] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:18] [INFO    ] discord_bot: Użytkownik smollkitty ukończył misję 'Saga Tygodnia'.
+[2025-06-01 23:41:22] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do smollkitty.
+[2025-06-01 23:41:22] [INFO    ] discord_bot: Użytkownik smollkitty (415926599213514753) zdobył osiągnięcie 'Smoczy Skarb' (ID tieru: dukaty_10000) na serwerze Kroniki Elary.
+[2025-06-01 23:41:41] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:42:43] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:43:43] [INFO    ] discord_bot: Wykonano 'profil' przez yaeliynn na Kroniki Elary.
+[2025-06-01 23:45:47] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:47:00] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:48:04] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:49:37] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:50:45] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:52:14] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:56:11] [INFO    ] discord_bot: Przyznano 40 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-01 23:56:36] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:57:45] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-01 23:58:53] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:00:10] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:02:28] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:07:07] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:08:18] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:08:28] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:11:03] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:12:05] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:16:44] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:20:13] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:21:46] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:24:11] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:25:19] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:27:44] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:27:50] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:28:44] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:28:44] [INFO    ] discord_bot: Przyznano 8 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-06-02 00:28:51] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-06-02 00:28:52] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:29:56] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:31:12] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:31:32] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:32:53] [INFO    ] discord_bot: Przyznano 46 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:34:15] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:35:56] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:36:33] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:37:10] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:38:43] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:41:23] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:47:46] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:49:09] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 00:52:00] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 00:54:04] [INFO    ] discord_bot: Przyznano 40 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:01:56] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:03:36] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:03:47] [INFO    ] discord_bot: Przyznano 9 XP dla smollkitty za dodanie reakcji.
+[2025-06-02 01:04:07] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:05:25] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:07:10] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:09:38] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:11:57] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:18:05] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:18:25] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:19:17] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:19:54] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:20:35] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:21:14] [INFO    ] discord_bot: Przyznano 40 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:22:16] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:23:20] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:24:55] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:25:06] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:26:14] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:27:22] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:28:27] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:29:27] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:29:49] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:30:28] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:31:52] [INFO    ] discord_bot: Przyznano 46 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:32:12] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:33:37] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:34:00] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:35:33] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:39:03] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:40:06] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:41:06] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:42:15] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:42:20] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:43:29] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:45:19] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:45:39] [INFO    ] discord_bot: Przyznano 43 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:46:22] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:46:59] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 01:48:01] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:50:07] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:53:28] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 01:59:03] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:03:38] [INFO    ] discord_bot: Przyznano 221 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:06:11] [INFO    ] discord_bot: Przyznano 228 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:06:43] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:07:44] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:08:38] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:09:03] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:10:17] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:13:34] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:14:38] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:16:07] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:16:20] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:19:48] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:22:37] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:23:13] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:23:46] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:24:14] [INFO    ] discord_bot: Przyznano 44 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:29:17] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:29:25] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:30:21] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:33:55] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:38:16] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:39:34] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:40:47] [INFO    ] discord_bot: Przyznano 11 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-06-02 02:40:55] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:40:55] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Gawędziarz Kronik' (ID tieru: wiadomosci_3) na serwerze Kroniki Elary.
+[2025-06-02 02:40:59] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:41:16] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:16] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:16] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:17] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:17] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:17] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:18] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:18] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:19] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-06-02 02:41:22] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:22] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:23] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:24] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:24] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:29] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:30] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:30] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:30] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:30] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:35] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:35] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Saga Tygodnia'.
+[2025-06-02 02:41:35] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Saga Tygodnia' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 02:41:35] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 (348831448607883265) zdobył osiągnięcie 'Smoczy Skarb' (ID tieru: dukaty_10000) na serwerze Kroniki Elary.
+[2025-06-02 02:42:00] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:43:02] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:43:18] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:44:56] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:45:25] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:46:11] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:47:17] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:48:45] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:52:34] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:52:44] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:53:40] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:53:44] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:54:45] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:55:01] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:56:01] [INFO    ] discord_bot: Przyznano 40 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:56:56] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:58:14] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 02:58:20] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 02:59:32] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:00:31] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:01:35] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:02:09] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:02:56] [INFO    ] discord_bot: Przyznano 40 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:03:40] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:03:58] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:04:43] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:05:53] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:05:56] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:06:55] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:08:04] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:08:31] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:09:18] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:10:31] [INFO    ] discord_bot: Przyznano 50 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:11:00] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:13:03] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:15:49] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:16:46] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:17:24] [INFO    ] discord_bot: Przyznano 45 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:18:11] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:18:24] [INFO    ] discord_bot: Przyznano 41 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:19:37] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:20:29] [INFO    ] discord_bot: Przyznano 8 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za dodanie reakcji.
+[2025-06-02 03:20:29] [INFO    ] discord_bot: Użytkownik !𝓙𝓪𝓬𝓱𝓪𝓷 ukończył misję 'Echa Wspólnoty'.
+[2025-06-02 03:20:29] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Echa Wspólnoty' do !𝓙𝓪𝓬𝓱𝓪𝓷.
+[2025-06-02 03:20:37] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:20:43] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-06-02 03:20:48] [INFO    ] discord_bot: Przyznano 40 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:22:01] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:23:45] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:24:32] [INFO    ] discord_bot: Przyznano 41 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:27:22] [INFO    ] discord_bot: Przyznano 47 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:30:37] [INFO    ] discord_bot: Przyznano 48 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:30:39] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:31:54] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:34:04] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:34:42] [INFO    ] discord_bot: Przyznano 44 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:35:04] [INFO    ] discord_bot: Przyznano 43 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:36:25] [INFO    ] discord_bot: Przyznano 48 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:37:54] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:37:59] [INFO    ] discord_bot: Przyznano 49 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 03:40:07] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:41:43] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 03:42:12] [INFO    ] discord_bot: Przyznano 46 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 04:01:02] [INFO    ] discord_bot: Przyznano 49 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 04:05:30] [INFO    ] discord_bot: Przyznano 42 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 04:21:12] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 04:22:56] [INFO    ] discord_bot: Przyznano 50 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 04:23:05] [INFO    ] discord_bot: Przyznano 8 XP dla smollkitty za dodanie reakcji.
+[2025-06-02 04:54:08] [INFO    ] discord_bot: Przyznano 79 XP dla Shinju za napisanie wiadomości.
+[2025-06-02 04:54:08] [INFO    ] discord_bot: Użytkownik Shinju (1238814802357387285) zdobył osiągnięcie 'Adept Kronik' (ID tieru: poziom_5) na serwerze Kroniki Elary.
+[2025-06-02 04:54:14] [INFO    ] discord_bot: Użytkownik Shinju (1238814802357387285) zdobył osiągnięcie 'Strażnik Wiedzy' (ID tieru: poziom_10) na serwerze Kroniki Elary.
+[2025-06-02 04:54:16] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:16] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:16] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:17] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:17] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:17] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:17] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:18] [INFO    ] discord_bot: Użytkownik Shinju (1238814802357387285) zdobył osiągnięcie 'Mieszek Pełen Blasku' (ID tieru: dukaty_2500) na serwerze Kroniki Elary.
+[2025-06-02 04:54:23] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:23] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:23] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:24] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:24] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:24] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:24] [INFO    ] discord_bot: Użytkownik Shinju ukończył misję 'Pierwsze Kroki Mocy'.
+[2025-06-02 04:54:24] [INFO    ] discord_bot: Wysłano powiadomienie o ukończeniu misji 'Pierwsze Kroki Mocy' do Shinju.
+[2025-06-02 04:54:27] [INFO    ] discord_bot: Przyznano 45 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 04:54:31] [INFO    ] discord_bot: Przyznano 11 XP dla smollkitty za dodanie reakcji.
+[2025-06-02 04:58:08] [INFO    ] discord_bot: Przyznano 47 XP dla !𝓙𝓪𝓬𝓱𝓪𝓷 za napisanie wiadomości.
+[2025-06-02 05:20:55] [INFO    ] discord_bot: Przyznano 46 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 05:21:59] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/server_stats) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:01] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/ranking/xp) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:06] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/ranking/currency) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:09] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/ranking/messages) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:10] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/ranking/premium_currency) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:15] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/ranking/voicetime) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:16] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/ranking/messages) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:16] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/ranking/premium_currency) bez autoryzacji (TYLKO DEVELOPMENT).
+[2025-06-02 05:22:25] [INFO    ] discord_bot: Przyznano 40 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 05:22:41] [INFO    ] discord_bot: Wykonano 'portfel' przez yaeliynn na Kroniki Elary.
+[2025-06-02 06:16:08] [INFO    ] discord_bot: Resetowanie misji dziennych. Poprzedni reset: 2025-06-01 04:00:00+00:00, Nowy reset: 2025-06-02 04:00:00+00:00
+[2025-06-02 06:16:08] [INFO    ] discord_bot: Resetowanie misji tygodniowych. Poprzedni reset: 2025-05-26 04:00:00+00:00, Nowy reset: 2025-06-02 04:00:00+00:00
+[2025-06-02 06:44:40] [INFO    ] discord_bot: Przyznano 42 XP dla smollkitty za napisanie wiadomości.
+[2025-06-02 06:54:52] [WARNING ] discord_bot: API Key nie jest ustawiony. Zezwolono na dostęp do API (/api/server_stats) bez autoryzacji (TYLKO DEVELOPMENT).
